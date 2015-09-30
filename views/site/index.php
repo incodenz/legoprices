@@ -19,16 +19,26 @@ $this->title = Yii::$app->name;
                 'attribute' => 'theme_id',
                 'filter' => \yii\helpers\ArrayHelper::map(Theme::find()->orderBy('description')->all(), 'id', 'description'),
                 'label' => 'Theme',
+                'headerOptions' => ['class' => 'col-md-3'],
                 'value' => function ($m) { return $m->theme; }
             ],
             [
                 'attribute' => 'code',
+                'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($m) { return Html::a($m->code, ['set/view', 'code' => $m->code]); },
                 'format' => 'html',
             ],
             [
                 'attribute' => 'title',
-                'value' => function ($m) { return Html::a($m->title, ['set/view', 'code' => $m->code]); },
+                'value' => function ($m) {
+                    return Html::a($m->title, ['set/view', 'code' => $m->code]).
+                        (
+                        $m->rrp && $m->price < $m->rrp
+                            ? ' - <em>'.round(($m->rrp-$m->price) / $m->rrp * 100).'% off</em>'
+                            : ''
+                        )
+                        ;
+                },
                 'format' => 'html',
             ],
             [
@@ -37,7 +47,9 @@ $this->title = Yii::$app->name;
                 'contentOptions' => ['class' => 'text-right'],
                 'value' => function ($m) {
                     return $m->rrp && $m->price < $m->rrp
-                        ? '<strong style="color:red;">'.Yii::$app->formatter->asCurrency($m->price).'</strong>'
+                        ? '<strong style="color:red;">'.
+                            Yii::$app->formatter->asCurrency($m->price).
+                            '</strong>'
                         : Yii::$app->formatter->asCurrency($m->price);
                 },
                 'format' => 'html',

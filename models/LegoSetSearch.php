@@ -44,7 +44,7 @@ class LegoSetSearch extends LegoSet
 
         $query->andFilterWhere(['like', 'code', $this->code])
             ->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'theme_id', $this->theme_id])
+            ->andFilterWhere(['theme_id' => $this->theme_id])
             ;
         $query->groupBy(self::tableName().'.id');
 
