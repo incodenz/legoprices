@@ -1,0 +1,84 @@
+
+table.table {
+  thead {
+    th {
+      white-space: nowrap;
+    }
+    tr {
+      @include background-image(linear-gradient(white, #eeeeee));
+    }
+
+    a.asc:after, a.desc:after {
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      font-family: 'Glyphicons Halflings';
+      font-style: normal;
+      font-weight: normal;
+      line-height: 1;
+      padding-left: 5px;
+    }
+
+    a.asc:after {
+      content: /*"\e113"*/ "\e151";
+    }
+
+    a.desc:after {
+      content: /*"\e114"*/ "\e152";
+    }
+
+    .sort-numerical a.asc:after {
+      content: "\e153";
+    }
+
+    .sort-numerical a.desc:after {
+      content: "\e154";
+    }
+
+    .sort-ordinal a.asc:after {
+      content: "\e155";
+    }
+
+    .sort-ordinal a.desc:after {
+      content: "\e156";
+    }
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  td, th {
+    vertical-align: middle;
+  }
+
+
+  .tcol-10 {
+    width: 10%;
+  }
+  .tcol-20 {
+    width: 20%;
+  }
+  .tcol-30 {
+    width: 30%;
+  }
+  .tcol-40 {
+    width: 40%;
+  }
+  .tcol-50 {
+    width: 50%;
+  }
+  .tcol-60 {
+    width: 60%;
+  }
+  .tcol-70 {
+    width: 70%;
+  }
+  .tcol-80 {
+    width: 80%;
+  }
+  .tcol-90 {
+    width: 90%;
+  }
+
+}

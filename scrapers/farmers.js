@@ -1,31 +1,17 @@
 var http = require('http'),
-    Sequelize = require('sequelize')
-  , sequelize = new Sequelize('lego', 'root', ''),
   cheerio = require('cheerio');
- 
-var farmers = sequelize.define('Farmers', {
-  lego_id: {type: Sequelize.INTEGER, unique: true},
-  image: Sequelize.STRING,
-  link: Sequelize.STRING,
-  title: Sequelize.STRING,
-  price: Sequelize.DECIMAL(10, 2)
- },{tableName: 'Farmers'}),
-    pricehistory = sequelize.define(
-    'PriceHistory', 
-    {
-        lego_id: Sequelize.INTEGER,
-        source: Sequelize.STRING,
-        price: Sequelize.DECIMAL(10, 2)
-    },
-    {
-        tableName: 'PriceHistory'
-    }
-);
- 
-sequelize.sync().success(function() {
-	
+
+
+
+
+
 	var pages = [
-		'/toys/GroupSize.ManufacturerName-0-ManufacturerName-Lego?SearchTerm=%22Lego%22',
+		'/toys/lego-construction/SortingAttribute-ArrivalDate-desc-PageSize-100',
+		'/toys/lego-construction/Page-1-SortingAttribute-ArrivalDate-desc-PageSize-100',
+		'/toys/lego-construction/Page-2-SortingAttribute-ArrivalDate-desc-PageSize-100',
+		'/toys/lego-construction/Page-3-SortingAttribute-ArrivalDate-desc-PageSize-100',
+		'/toys/lego-construction/Page-4-SortingAttribute-ArrivalDate-desc-PageSize-100',
+		'/toys/lego-construction/Page-5-SortingAttribute-ArrivalDate-desc-PageSize-100',
 	];
 	for (i = 0; i < pages.length ; i++)
 	{
@@ -33,28 +19,11 @@ sequelize.sync().success(function() {
 			setTimeout(function() {
 				getPage(page);
 			}, 2000*item);
-		})(pages[i],i)
-		
+		})(pages[i],i);
 	}
-	 
-})
 
-function savefarmersData(data) {
-	console.log('Saving '+data.lego_id+' :: '+data.title);
-    var ph = {
-        lego_id: data.lego_id,
-        price: data.price,
-        source: 'farmers'
-    };
-    pricehistory.findOrCreate({lego_id: ph.lego_id, source: ph.source, price: ph.price}, ph).success(function (obj, created) {
-            if (!created) { obj.save(); }
-        });
-	farmers.findOrCreate({ lego_id: data.lego_id }, data).success(function (row) {
-		
-		row.price = data.price;
-		row.save();
-	});
-}
+
+
 function getPage(page) {
 
 	page = page ? page : 1;
@@ -65,7 +34,7 @@ function getPage(page) {
 		'www.farmers.co.nz',
 		page,
 		function (str) {
-			console.log(' - Loaded! Page '+page+' .. processing');
+			//console.log(' - Loaded! Page '+page+' .. processing');
 			processPage(str);
 
 		}
@@ -75,7 +44,7 @@ function getPage(page) {
 }
 function processPage(data) {
 	var $ = cheerio.load(data),
-        items = $('.product-list-item'),
+        items = $('.ish-productList-item'),
         item, 
         lego_id;
     for (i = 0; i < items.length; i++)
@@ -84,13 +53,26 @@ function processPage(data) {
 		item.title = items.eq(i).find('.ish-productTitle').text().trim();
 		item.image = items.eq(i).find('.ish-product-photo img').eq(0).attr('src');
 		item.link = items.eq(i).find('a').eq(0).attr('href');
-		item.price = items.eq(i).find('.ish-priceContainer-salePrice').text();
+		item.price = items.eq(i).find('.ish-priceContainer-salePrice .new-price').text();
+		if (!item.price) {
+			item.price = items.eq(i).find('.ish-priceContainer-salePrice .intro-new-price').text().toUpperCase().replace('NOW', '');
+		}
+		if (!item.price) {
+			item.price = items.eq(i).find('.ish-priceContainer-salePrice .std-price').text();
+		}
+		if (!item.price) {
+			item.price = items.eq(i).find('.ish-priceContainer-salePrice').text();
+		}
 		item.price = item.price.replace('$','').trim();
 		lego_id = /([0-9]{4,5})/.exec(item.title)
-		item.lego_id = lego_id ? lego_id[0] : null;
-		if (item.lego_id) {
-			savefarmersData(item);
+		item.set_id = lego_id ? lego_id[0] : null;
+		item.store = 'farmers';
+		if (item.set_id) {
+			console.log(
+				JSON.stringify(item)
+			);
 		}
+
 	}
 	
 }

@@ -1,50 +1,34 @@
 var http = require('http'),
-    Sequelize = require('sequelize'),
-    sequelize = new Sequelize('lego', 'root', ''),
     cheerio = require('cheerio'),
-    fs = require('fs');
- 
-function include(file_) {
-    with (global) {
-        eval(fs.readFileSync(file_) + '');
-    }
-}
+    BASEURL = 'www.thewarehouse.co.nz';
 
-var warehouse = sequelize.define('Warehouse', {
-  lego_id: {type: Sequelize.INTEGER, unique: true},
-  image: Sequelize.STRING,
-  link: Sequelize.STRING,
-  title: Sequelize.STRING,
-  price: Sequelize.DECIMAL(10, 2)
- },{tableName: 'Warehouse'}),
-    pricehistory = sequelize.define(
-    'PriceHistory', 
-    {
-        lego_id: Sequelize.INTEGER,
-        source: Sequelize.STRING,
-        price: Sequelize.DECIMAL(10, 2)
-    },
-    {
-        tableName: 'PriceHistory'
-    }
-);
-sequelize.sync().success(function() {
     
     var pages = [
-        '/red/catalog/toys/lego/city',
+        /*'/red/catalog/toys/lego/city',
+        '/red/catalog/toys/lego/classic',
         '/red/catalog/toys/lego/creator',
         '/red/catalog/toys/lego/disney-princess',
+        '/red/catalog/toys/lego/duplo',
+        '/red/catalog/toys/lego/elves',
         '/red/catalog/toys/lego/exclusives',
         '/red/catalog/toys/lego/friends',
-        '/red/catalog/toys/lego/hero-factory',
         '/red/catalog/toys/lego/juniors',
-        '/red/catalog/toys/lego/lone-ranger',
-        '/red/catalog/toys/lego/mixels',
-        '/red/catalog/toys/lego/movie',
         '/red/catalog/toys/lego/ninjago',
+        '/red/catalog/toys/lego/pirates',
+        '/red/catalog/toys/lego/scooby-doo',
+        '/red/catalog/toys/lego/speed-champions',
+        '/red/catalog/toys/lego/technic',
+        '/red/catalog/toys/lego/ultra-agents',
         '/red/catalog/toys/lego/star-wars',
-        '/red/catalog/toys/lego/super-heroes',
-        '/red/catalog/toys/lego/turtles'
+        '/red/catalog/toys/lego/marvel-super-heroes',
+        '/red/catalog/toys/lego/dc-super-heroes',*/
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100',
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100&srt=100',
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100&srt=200',
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100&srt=300',
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100&srt=400',
+        'search.thewarehouse.co.nz/search?p=KK&srid=S10-AUSYDR02&lbc=thewarehouse&ts=custom&isort=score&view=grid&w=Lego&rk=1&cnt=100&srt=500',
+
     ];
     for (i = 0; i < pages.length ; i++)
     {
@@ -56,32 +40,19 @@ sequelize.sync().success(function() {
         
     }
      
-})
 
-function saveWarehouseData(data) {
-    console.log('Saving '+data.lego_id+' :: '+data.title);
-    var ph = {
-        lego_id: data.lego_id,
-        price: data.price,
-        source: 'warehouse'
-    };
-    pricehistory.findOrCreate({lego_id: ph.lego_id, source: ph.source, price: ph.price}, ph).success(function (obj, created) {
-            if (!created) { obj.save(); }
-        });
-    warehouse.findOrCreate({ lego_id: data.lego_id }, data).success(function (row) {
-        
-		row.price = data.price;
-		row.save();
-	});
-}
 function getPage(page) {
 
 	page = page ? page : 1;
 
-
+    var host = BASEURL;
+    if (page.indexOf('search.thewarehouse.co.nz') >= 0) {
+        host = 'search.thewarehouse.co.nz';
+        page = page.replace(host, '');
+    }
 
 	grabURL(
-		'www.thewarehouse.co.nz',
+        host,
 		page,
 		function (str) {
 			console.log(' - Loaded! Page '+page+' .. processing');
@@ -94,22 +65,40 @@ function getPage(page) {
 }
 function processPage(data) {
 	var $ = cheerio.load(data),
-        items = $('.horizontal'),
-        item, 
+        //items = $('.horizontal'),
+        items = $('.sli_grid_result'),
+        item,
         lego_id;
     for (i = 0; i < items.length; i++)
 	{
 		item = {};
-		item.title = items.eq(i).find('.description').text().trim();
-		item.image = items.eq(i).find('.product img').eq(0).attr('src');
-		item.link = items.eq(i).find('a').eq(0).attr('href');
-		item.price = items.eq(i).find('.price').text();
-		item.price = item.price.replace('$','').trim();
+		//item.title = items.eq(i).find('.description').text().trim();
+		item.title = items.eq(i).find('.sli_h2').text().trim();
+        if (item.title.indexOf('...') >= 0) {
+            //item.title = items.eq(i).find('.product img').eq(0).attr('alt');
+            item.title = items.eq(i).find('.sli_grid_image a').eq(0).attr('title');
+        }
+		//item.image = BASEURL+items.eq(i).find('.product img').eq(0).attr('src');
+		item.image = items.eq(i).find('.sli_grid_image img').eq(0).attr('src');
+		//item.link = BASEURL+items.eq(i).find('a').eq(0).attr('href');
+		item.link = items.eq(i).find('.sli_h2 a').eq(0).attr('href');
+		//item.price = items.eq(i).find('.price').text();
+		item.price = items.eq(i).find('.sli_grid_price').text();
+		item.price = item.price.toUpperCase().replace('NOW', '').replace('$','').trim();
 		lego_id = /([0-9]{4,5})/.exec(item.title)
-		item.lego_id = lego_id ? lego_id[0] : null;
-		if (item.lego_id) {
-			saveWarehouseData(item);
-		}
+		item.set_id = lego_id ? lego_id[0] : null;
+        // check if in stock ...
+        if (items.eq(i).find('.sli_cart_button').find('input').length) {
+            if (item.set_id) {
+                item.store = 'warehouse';
+                console.log(
+                    JSON.stringify(item)
+                );
+            }
+        }else{
+            console.log(item.set_id+ 'not in stock');
+            // not in stock
+        }
 	}
 	
 }
