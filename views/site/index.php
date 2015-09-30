@@ -33,8 +33,14 @@ $this->title = Yii::$app->name;
             ],
             [
                 'attribute' => 'price',
-                'format' => 'currency',
                 'label' => 'Best Price',
+                'contentOptions' => ['class' => 'text-right'],
+                'value' => function ($m) {
+                    return $m->rrp && $m->price < $m->rrp
+                        ? '<strong style="color:red;">'.Yii::$app->formatter->asCurrency($m->price).'</strong>'
+                        : Yii::$app->formatter->asCurrency($m->price);
+                },
+                'format' => 'html',
             ]
         ],
     ]) ?>

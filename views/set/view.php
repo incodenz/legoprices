@@ -16,6 +16,8 @@ $provider = new ActiveDataProvider([
 <h1><?= $model->code.' '.$model->title ?></h1>
 <strong>Year</strong> <?= $model->year ?><br />
 <strong>Theme</strong> <?= $model->theme ?><br />
+<strong>RRP</strong> <?= $model->rrp ? Yii::$app->formatter->asCurrency($model->rrp) : '?' ?><br />
+<br />
 
 <div class="row">
     <div class="col-md-6">
@@ -30,7 +32,16 @@ $provider = new ActiveDataProvider([
                     'format' => 'html',
                     'enableSorting' => false,
                 ],
-                'price:currency'
+                [
+                    'attribute' => 'price',
+                    'contentOptions' => ['class' => 'text-right'],
+                    'value' => function ($m) use ($model) {
+                        return $model->rrp && $m->price < $model->rrp
+                            ? '<strong style="color:red;">'.Yii::$app->formatter->asCurrency($m->price).'</strong>'
+                            : Yii::$app->formatter->asCurrency($m->price);
+                    },
+                    'format' => 'html',
+                ]
             ]
         ]);
         ?>

@@ -33,6 +33,7 @@ class LegoSetSearch extends LegoSet
                 self::tableName().'.title title',
                 self::tableName().'.code code',
                 self::tableName().'.theme_id theme_id',
+                self::tableName().'.rrp rrp',
                 'min(price) price',
             ]
         );
