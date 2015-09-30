@@ -7,7 +7,7 @@ use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
-
+$this->title = $model->code.' '.$model->title;
 $provider = new ActiveDataProvider([
     'query' => $model->getStoreSets()
 ]);
