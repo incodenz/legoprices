@@ -10,7 +10,7 @@ $url = \yii\helpers\Url::to(['notify/confirm', 'id' => $model->id, 'hash' => $mo
 <p>Before we can send you emails to notify you of prices, you need to confirm your
 email address by following the link below</p>
 
-<p><a href="<?= $url ?>">$url</a></p>
+<p><a href="<?= $url ?>"><?=$url ?></a></p>
 
 <p>
 Thanks
