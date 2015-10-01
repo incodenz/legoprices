@@ -83,8 +83,12 @@ function processPage(data) {
 		item.image = items.eq(i).find('.sli_grid_image img').eq(0).attr('src');
 		//item.link = BASEURL+items.eq(i).find('a').eq(0).attr('href');
 		item.link = items.eq(i).find('.sli_h2 a').eq(0).attr('href');
-        var q = url.parse(item.link).query;
+        var q = url.parse(item.link, true).query;
+        console.log(item.link);
+        console.log(q);
         item.link = q && q.url ? q.url : item.link;
+
+        process.exit();
 		//item.price = items.eq(i).find('.price').text();
 		item.price = items.eq(i).find('.sli_grid_price').text();
 		item.price = item.price.toUpperCase().replace('NOW', '').replace('$','').trim();
