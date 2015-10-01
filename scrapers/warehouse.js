@@ -93,7 +93,7 @@ function processPage(data) {
         // check if in stock ...
         item.in_stock = false;
         if (items.eq(i).find('.sli_cart_button').find('input').length) {
-            item.in_stock = false;
+            item.in_stock = true;
         }
         if (item.set_id) {
             item.store = 'warehouse';
