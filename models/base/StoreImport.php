@@ -6,25 +6,23 @@ use Yii;
 use yii\data\ActiveDataProvider;
 
 /**
- * This is the base-model class for table "store_set".
+ * This is the base-model class for table "store_import".
  *
  * @property integer $id
  * @property integer $store_id
- * @property integer $legoset_id
- * @property string $url
+ * @property string $created_at
+ * @property string $raw_data
  *
- * @property \app\models\LegoSet $legoset
  * @property \app\models\Store $store
- * @property \app\models\StoreSetPrice[] $storeSetPrices
  */
-class StoreSet extends \yii\db\ActiveRecord
+class StoreImport extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'store_set';
+        return 'store_import';
     }
 
     /**
@@ -32,7 +30,7 @@ class StoreSet extends \yii\db\ActiveRecord
      */
     public static function label($n = 1)
     {
-        return Yii::t('app', '{n, plural, =1{Store Set} other{Store Sets}}', ['n' => $n]);
+        return Yii::t('app', '{n, plural, =1{Store Import} other{Store Imports}}', ['n' => $n]);
     }
 
     /**
@@ -49,9 +47,10 @@ class StoreSet extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['store_id', 'legoset_id'], 'required'],
-            [['store_id', 'legoset_id'], 'integer'],
-            [['url'], 'string', 'max' => 500]
+            [['store_id'], 'required'],
+            [['store_id'], 'integer'],
+            [['created_at'], 'safe'],
+            [['raw_data'], 'string']
         ];
     }
 
@@ -63,17 +62,9 @@ class StoreSet extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'store_id' => 'Store ID',
-            'legoset_id' => 'Legoset ID',
-            'url' => 'Url',
+            'created_at' => 'Created At',
+            'raw_data' => 'Raw Data',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLegoset()
-    {
-        return $this->hasOne(\app\models\LegoSet::className(), ['id' => 'legoset_id']);
     }
 
     /**
@@ -82,14 +73,6 @@ class StoreSet extends \yii\db\ActiveRecord
     public function getStore()
     {
         return $this->hasOne(\app\models\Store::className(), ['id' => 'store_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStoreSetPrices()
-    {
-        return $this->hasMany(\app\models\StoreSetPrice::className(), ['store_set_id' => 'id']);
     }
 
     /**
@@ -111,10 +94,10 @@ class StoreSet extends \yii\db\ActiveRecord
         $query->andFilterWhere([
             'id' => $this->id,
             'store_id' => $this->store_id,
-            'legoset_id' => $this->legoset_id,
         ]);
 
-        $query->andFilterWhere(['like', 'url', $this->url]);
+        $query->andFilterWhere(['like', 'created_at', $this->created_at])
+            ->andFilterWhere(['like', 'raw_data', $this->raw_data]);
 
         return new ActiveDataProvider([
             'query' => $query,

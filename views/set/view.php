@@ -7,6 +7,7 @@
 /* @var bool $notifySuccess */
 /* @var $this \yii\web\View */
 use app\models\LegoSet;
+use app\models\StoreSetPrice;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -32,7 +33,15 @@ $provider = new ActiveDataProvider([
                 [
                     'attribute' => 'store_id',
                     'label' => 'Store',
-                    'value' => function ($m) { return Html::a($m->store->title, $m->url); },
+                    'value' => function ($m) {
+                        /* @var app\models\StoreSet $m */
+                        return Html::a($m->store->title, $m->url) .
+                            (
+                                $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK
+                                    ? '<strong class="text-muted"><em> (Out of Stock)</em></strong>'
+                                    : ''
+                            );
+                    },
                     'format' => 'html',
                     'enableSorting' => false,
                 ],
@@ -40,9 +49,14 @@ $provider = new ActiveDataProvider([
                     'attribute' => 'price',
                     'contentOptions' => ['class' => 'text-right'],
                     'value' => function ($m) use ($model) {
+                        /* @var app\models\StoreSet $m */
+                        $price = Yii::$app->formatter->asCurrency($m->price);
+                        if ($m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK) {
+                            return '<span class="text-muted">'.$price.'</span>';
+                        }
                         return $model->rrp && $m->price < $model->rrp
-                            ? '<strong style="color:red;">'.Yii::$app->formatter->asCurrency($m->price).'</strong>'
-                            : Yii::$app->formatter->asCurrency($m->price);
+                            ? '<strong style="color:red;">'.$price.'</strong>'
+                            : $price;
                     },
                     'format' => 'html',
                 ]

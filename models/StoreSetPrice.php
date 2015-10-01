@@ -12,6 +12,7 @@ class StoreSetPrice extends \app\models\base\StoreSetPrice
 {
     const STATUS_AVAILABLE = 1;
     const STATUS_EXPIRED = 2;
+    const STATUS_OUT_OF_STOCK = 3;
 
     public function beforeSave($insert)
     {
@@ -25,7 +26,7 @@ class StoreSetPrice extends \app\models\base\StoreSetPrice
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->status_id == self::STATUS_AVAILABLE) {
+        if ($this->status_id != self::STATUS_EXPIRED) {
             self::updateAll(
                 [
                     'status_id' => self::STATUS_EXPIRED,
@@ -37,6 +38,28 @@ class StoreSetPrice extends \app\models\base\StoreSetPrice
                     ':id' => $this->id,
                 ]
             );
+        }
+        if ($insert) {
+            $this->notify();
+        }
+    }
+
+    private function notify()
+    {
+        if (!$this->storeSet->legoset->rrp) {
+            return;
+        }
+        $rrp = $this->storeSet->legoset->rrp;
+        $discount = round(($rrp - $this->price) / $rrp * 100);
+        /* @var NotificationSet[] $notifySets */
+        $notifySets = NotificationSet::find()->where([
+                'set_code' => $this->storeSet->legoset->code,
+                'status_id' => NotificationSet::STATUS_PENDING
+            ])->andWhere(
+                ['>=', 'percent_off', $discount]
+            )->all();
+        foreach($notifySets as $notifySet) {
+            $notifySet->notify($this);
         }
     }
 

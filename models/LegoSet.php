@@ -37,7 +37,7 @@ class LegoSet extends \app\models\base\LegoSet
         $prices = [];
         foreach($this->storeSets as $storeSet) {
             $price = $storeSet->price;
-            if ($price) {
+            if ($price && $storeSet->currentPrice->status_id == StoreSetPrice::STATUS_AVAILABLE) {
                 $prices[] = $price;
             }
         }

@@ -9,30 +9,47 @@ namespace app\commands;
 
 use app\models\LegoSet;
 use app\models\Store;
+use app\models\StoreImport;
 use app\models\StoreSet;
 use app\models\StoreSetPrice;
 use app\models\Theme;
 use yii\console\Controller;
+use yii\db\Expression;
 
 class ScraperController extends Controller
 {
+    private $store_id;
 
+    public $debug = false;
+    public function options($actionID)
+    {
+        // $actionId might be used in subclasses to provide options specific to action id
+        return ['debug'];
+    }
     public function actionOutput()
     {
+        $raw_input = '';
         while (!feof(STDIN)){
             $content = fgets(STDIN, 1024);
+            $raw_input .= $content;
             $json = json_decode($content, TRUE);
             if ($json) {
                 try {
-                    echo ".";
                     $this->processLine($json);
                 } catch (\Exception $e) {
                     // do something with the exception ...
                 }
             } else {
-                echo "x";
+                // bad json
             }
 
+        }
+        if ($this->store_id) {
+            $storeImport = new StoreImport();
+            $storeImport->store_id = $this->store_id;
+            $storeImport->created_at = new Expression('NOW()');
+            $storeImport->raw_data = $raw_input;
+            $storeImport->save();
         }
         echo "\n";
     }
@@ -85,6 +102,7 @@ class ScraperController extends Controller
     private function processLine($json)
     {
         if ($json['set_id']) {
+            echo $this->debug === false ? "" : $json['set_id'].' '.$json['title']."\n";
             $set = LegoSet::findSet($json['set_id']);
             if (!$set) {
                 $set = new LegoSet();
@@ -92,15 +110,21 @@ class ScraperController extends Controller
                 $set->code = $json['set_id'];
                 if (!$set->save()) {
                     // do something
+                    echo $this->debug === false ? "" : " - New set .. ERROR unable to save ".json_encode($set->errors)."\n";
+                } else {
+                    echo $this->debug === false ? "" : " - New set saved\n";
                 }
             }
+            echo $this->debug === false ? "" : " - Store ".$json['store']."\n";
             $store = Store::findStore($json['store']);
             if (!$store) {
                 $store = new Store();
                 $store->title = ucfirst($json['store']);
                 $store->hash = $json['store'];
                 $store->save();
+                echo $this->debug === false ? "" : " - new store, saved\n";
             }
+            $this->store_id = $store->id;
             $store_set = StoreSet::findSet($store, $set);
             if (!$store_set) {
                 $store_set = new StoreSet();
@@ -109,16 +133,23 @@ class ScraperController extends Controller
                 $store_set->url = $json['link'];
                 if (!$store_set->save()) {
                     // do something
+                    echo $this->debug === false ? "" : " - new store set, ERROR -- not saved ".json_encode($store_set->errors)."\n";
+                } else {
+                    echo $this->debug === false ? "" : " - new store set\n";
+
                 }
             }
+            $store_set->updatePrice($json['price'], $debug = $this->debug !== false);
+
             $currentPrice = $store_set->getCurrentPrice();
             if (isset($json['in_stock']) && !$json['in_stock']) {
-                if ($currentPrice) {
-                    $currentPrice->status_id = StoreSetPrice::STATUS_EXPIRED;
-                    $currentPrice->save();
-                }
-            } else {
-                $store_set->updatePrice($json['price']);
+                echo $this->debug === false ? "" : " - setting status to out of stock\n";
+                $currentPrice->status_id = StoreSetPrice::STATUS_OUT_OF_STOCK;
+                $currentPrice->save();
+            } elseif(isset($json['in_stock']) && $json['in_stock'] && $currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK) {
+                echo $this->debug === false ? "" : " - setting status to available\n";
+                $currentPrice->status_id = StoreSetPrice::STATUS_AVAILABLE;
+                $currentPrice->save();
             }
 
         }

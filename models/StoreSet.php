@@ -24,7 +24,7 @@ class StoreSet extends \app\models\base\StoreSet
         return self::find()->where(['store_id' => $store->id, 'legoset_id' => $set->id])->one();
     }
 
-    public function updatePrice($price) {
+    public function updatePrice($price, $debug = false) {
         $currentPrice = $this->getCurrentPrice();
         if (!$currentPrice || $currentPrice->price != $price) {
             $currentPrice = $currentPrice ? $currentPrice : new StoreSetPrice();
@@ -34,9 +34,13 @@ class StoreSet extends \app\models\base\StoreSet
             $currentPrice->status_id = StoreSetPrice::STATUS_AVAILABLE;
             if (!$currentPrice->save()) {
                 // do something
+                echo $debug === false ? "" : " - ERROR unable to save new price ... ".$price."\n";
+            } else {
+                echo $debug === false ? "" : " - new price ... ".$price."\n";
             }
         } else {
             // same price - update
+            echo $debug === false ? "" : " - price unchanged\n";
             $currentPrice->updated_at = new Expression('NOW()');
             $currentPrice->save();
         }
@@ -53,7 +57,7 @@ class StoreSet extends \app\models\base\StoreSet
      */
     public function getCurrentPrice() {
         return StoreSetPrice::find()
-            ->where(['store_set_id' => $this->id, 'status_id' => StoreSetPrice::STATUS_AVAILABLE])
+            ->where(['store_set_id' => $this->id, 'status_id' => [StoreSetPrice::STATUS_AVAILABLE, StoreSetPrice::STATUS_OUT_OF_STOCK]])
             ->orderBy('id DESC')
             ->one();
     }
