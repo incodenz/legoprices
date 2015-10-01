@@ -2,6 +2,10 @@
 /**
  * @var LegoSet $model
  */
+/* @var NotificationAddress $notifyAddress */
+/* @var NotificationSet $notifySet */
+/* @var bool $notifySuccess */
+/* @var $this \yii\web\View */
 use app\models\LegoSet;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
@@ -51,3 +55,9 @@ $provider = new ActiveDataProvider([
     </div>
 </div>
 
+<?= $this->render('/notify/_set', [
+    'model' => $model,
+    'notifySet' => $notifySet,
+    'notifyAddress' => $notifyAddress,
+    'notifySuccess' => $notifySuccess,
+]);

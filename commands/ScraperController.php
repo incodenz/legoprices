@@ -10,6 +10,7 @@ namespace app\commands;
 use app\models\LegoSet;
 use app\models\Store;
 use app\models\StoreSet;
+use app\models\StoreSetPrice;
 use app\models\Theme;
 use yii\console\Controller;
 
@@ -110,7 +111,15 @@ class ScraperController extends Controller
                     // do something
                 }
             }
-            $store_set->updatePrice($json['price']);
+            $currentPrice = $store_set->getCurrentPrice();
+            if (isset($json['in_stock']) && !$json['in_stock']) {
+                if ($currentPrice) {
+                    $currentPrice->status_id = StoreSetPrice::STATUS_EXPIRED;
+                    $currentPrice->save();
+                }
+            } else {
+                $store_set->updatePrice($json['price']);
+            }
 
         }
 

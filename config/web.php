@@ -30,6 +30,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'login' => 'user/login',
+                'about' => 'site/about',
                 'logout' => 'user/logout',
                 'set/<code:([0-9]+)>' => 'set/view',
             ]

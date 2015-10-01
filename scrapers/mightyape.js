@@ -51,13 +51,16 @@ function processPage(data) {
 		lego_id = /([0-9]{4,5})/.exec(item.title)
 		item.set_id = lego_id ? lego_id[0] : null;
         item.store = 'mightyape';
+		item.in_stock = false;
 		if (items.eq(i).find('.delivery').text().indexOf('In stock') >= 0) { // instock
+			item.in_stock = true;
+		}
 			if (item.set_id) {
 				console.log(
 					JSON.stringify(item)
 				);
 			}
-		}
+
 	}
 	
 }

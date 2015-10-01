@@ -39,6 +39,9 @@ AppAsset::register($this);
         </div>
     </div>
 </div>
+<footer>
+    <p class="text-right small">built by <a href="http://incode.nz">incode.nz</a> - feedback / comments? <a href="mailto:lego@incode.co.nz">lego@incode.co.nz</a> </p>
+</footer>
 <?php $this->endBody() ?>
 </body>
 </html>

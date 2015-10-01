@@ -88,17 +88,17 @@ function processPage(data) {
 		lego_id = /([0-9]{4,5})/.exec(item.title)
 		item.set_id = lego_id ? lego_id[0] : null;
         // check if in stock ...
+        item.in_stock = false;
         if (items.eq(i).find('.sli_cart_button').find('input').length) {
+            item.in_stock = false;
+        }
             if (item.set_id) {
                 item.store = 'warehouse';
                 console.log(
                     JSON.stringify(item)
                 );
             }
-        }else{
-            console.log(item.set_id+ 'not in stock');
-            // not in stock
-        }
+
 	}
 	
 }

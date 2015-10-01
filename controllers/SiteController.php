@@ -39,4 +39,9 @@ class SiteController extends Controller
             'searchModel' => $searchModel,
         ]);
     }
+
+    public function actionAbout()
+    {
+        return $this->render('about');
+    }
 }
