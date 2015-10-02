@@ -41,7 +41,8 @@ $provider = new ActiveDataProvider([
                                 $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK
                                     ? '<strong class="text-muted"><em> (Out of Stock)</em></strong>'
                                     : ''
-                            );
+                            ).' '.
+                            Html::a('(history)', ['set/store-history', 'id' => $m->id], ['class' => 'small']);
                     },
                     'format' => 'html',
                     'enableSorting' => false,

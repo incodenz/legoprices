@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\LegoSet;
 use app\models\NotificationAddress;
 use app\models\NotificationSet;
+use app\models\StoreSet;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
@@ -73,6 +74,18 @@ class SetController extends Controller
                 'notifyAddress' => $notifyAddress,
                 'notifySuccess' => $success
             ]
+        );
+    }
+    public function actionStoreHistory($id)
+    {
+        $storeSet = StoreSet::findOne($id);
+        if (!$storeSet) {
+            throw new NotFoundHttpException;
+        }
+
+        return $this->render(
+            'store-history',
+            ['storeSet' => $storeSet]
         );
     }
 }

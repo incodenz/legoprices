@@ -13,6 +13,7 @@ use app\models\StoreImport;
 use app\models\StoreSet;
 use app\models\StoreSetPrice;
 use app\models\Theme;
+use Yii;
 use yii\console\Controller;
 use yii\db\Expression;
 
@@ -56,7 +57,7 @@ class ScraperController extends Controller
 
     public function actionUpdate() {
         $startYear = 2011;
-        $endYear = date('Y');
+        $endYear = date('Y') + 1;
 
         for($i = $startYear; $i <= $endYear; $i ++) {
             $url = 'http://brickset.com/api/v2.asmx/getSets?apiKey=tizB-rqbL-rIXo&userHash=&query=&theme=&subtheme=&setNumber=&year='.$i.'&owned=&wanted=&orderBy=&pageSize=1000&pageNumber=1&userName=';
@@ -65,6 +66,14 @@ class ScraperController extends Controller
             $this->parseXML($data);
         }
         //$data = file_get_contents(__DIR__.'/test.xml');
+
+        $cmd = Yii::$app->db->createCommand("UPDATE lego_set ls INNER JOIN (select max(price) p, code from lego_set ls
+INNER JOIN store_set ss ON ls.id=ss.legoset_id
+INNER JOIN store_set_price ssp on ss.id=ssp.store_set_id
+GROUP BY code
+HAVING count(price) > 1) x ON ls.code=x.code
+SET rrp=x.p WHERE rrp is null;");
+        $cmd->execute();
 
     }
     private function parseXML($xml)
