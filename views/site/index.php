@@ -7,7 +7,7 @@ use app\models\Theme;
 use yii\grid\GridView;
 use yii\helpers\Html;
 
-$this->title = Yii::$app->name;
+$this->title = 'Set Listing';
 ?>
 <div class="site-index">
 

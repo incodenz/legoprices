@@ -5,6 +5,7 @@
 use yii\grid\GridView;
 use yii\helpers\Html;
 
+$this->title = 'Top Deals';
 $legoSet = new \app\models\LegoSet();
 ?>
 
@@ -51,5 +52,3 @@ $legoSet = new \app\models\LegoSet();
 
     ]
 ]);
-?>
-<?= Yii::$app->urlManager->getBaseUrl();

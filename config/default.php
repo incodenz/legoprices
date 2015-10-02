@@ -49,6 +49,11 @@ $config = [
                 'set/<code:([0-9]+)>' => 'set/view',
             ]
         ],
+        'db' => [
+            'on afterOpen' => function($event) {
+                $event->sender->createCommand("SET time_zone = '+00:00';")->execute();
+            }
+        ],
     ],
     'params' => $params,
 ];
