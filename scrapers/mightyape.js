@@ -44,6 +44,9 @@ function processPage(data) {
 	{
 		item = {};
 		item.title = items.eq(i).find('a.title').text().trim();
+		if (item.title == 'LEGO Legends of Chima - Lion Tribe (70224)') {
+			item.title = 'LEGO Legends of Chima - Lion Tribe (70229)';
+		}
 		item.image = items.eq(i).find('img').eq(0).attr('src');
 		item.link = 'https://www.mightyape.co.nz'+items.eq(i).find('a').eq(0).attr('href');
 		item.price = items.eq(i).find('.price .price').text();

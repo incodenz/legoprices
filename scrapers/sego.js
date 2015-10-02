@@ -56,6 +56,11 @@ function processPage(data) {
 		if (items.eq(i).text().indexOf('Out of stock') >= 0) {
 			item.in_stock = false;
 		}
+		if (
+			item.title.indexOf('set of 16') >= 0 // remove minifigure sets
+		) {
+			item.set_id = false;
+		}
 		if (item.set_id) {
             console.log(
                 JSON.stringify(item)
