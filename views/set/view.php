@@ -50,6 +50,9 @@ $provider = new ActiveDataProvider([
                     'attribute' => 'price',
                     'contentOptions' => ['class' => 'text-right'],
                     'value' => function ($m) use ($model) {
+                        if (!$m->price) {
+                            return '';
+                        }
                         /* @var app\models\StoreSet $m */
                         $price = Yii::$app->formatter->asCurrency($m->price);
                         if ($m->currentPrice && $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK) {
