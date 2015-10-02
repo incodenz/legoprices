@@ -12,8 +12,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 ?>
-<div class="row">
-<div class="well col-md-6 col-md-offset-3">
+<div>
     <?php if ($notifySuccess) {
         ?><p>Thanks, we will let you know if the price goes under <?=$notifySet->percent_off?>%</p><?php
     } else { ?>
@@ -37,11 +36,10 @@ use yii\helpers\Html;
         </div>
         <?= Html::activeHiddenInput($notifySet, 'set_code') ?>
 
-        <?= Html::submitButton('<span class="glyphicon glyphicon-check"></span> ' .  Yii::t('app', 'Notify Me'), [
+        <?= Html::submitButton('' .  Yii::t('app', 'Notify Me'), [
             'id' => 'save-' . $model->formName(),
-            'class' => 'btn btn-primary'
+            'class' => 'btn btn-primary btn-sm'
         ]); ?>
         <?php $form->end(); ?>
     <?php } ?>
-</div>
 </div>

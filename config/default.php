@@ -8,7 +8,7 @@ date_default_timezone_set('UTC'); // Keep this set to UTC
 
 $config = [
     'id' => 'lego-prices',
-    'name' => 'Lego Prices',
+    'name' => 'Brick Prices',
     'basePath' => dirname(__DIR__),
     'components' => [
         'cache' => [
@@ -33,6 +33,21 @@ $config = [
             'defaultTimeZone' => date_default_timezone_get(),
             'timeZone' => 'Pacific/Auckland', // Change this timeZone to your local if required
             'datetimeFormat' => 'dd/MM/yyyy HH:mm aa',
+        ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'scriptUrl' => '/index.php',
+            'baseUrl' => '',
+            'hostInfo' => 'http://lego.incode.nz',
+            'rules' => [
+                'login' => 'user/login',
+                'about' => 'site/about',
+                '' => 'site/index',
+                'top' => 'site/top',
+                'logout' => 'user/logout',
+                'set/<code:([0-9]+)>' => 'set/view',
+            ]
         ],
     ],
     'params' => $params,

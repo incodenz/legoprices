@@ -68,15 +68,17 @@ $provider = new ActiveDataProvider([
             ]
         ]);
         ?>
+        <div class="well">
+            <?= $this->render('/notify/_set', [
+                'model' => $model,
+                'notifySet' => $notifySet,
+                'notifyAddress' => $notifyAddress,
+                'notifySuccess' => $notifySuccess,
+            ]); ?>
+
+        </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 text-center">
         <?= Html::a(Html::img($model->thumbnail_url), $model->brickset_url) ?>
     </div>
 </div>
-
-<?= $this->render('/notify/_set', [
-    'model' => $model,
-    'notifySet' => $notifySet,
-    'notifyAddress' => $notifyAddress,
-    'notifySuccess' => $notifySuccess,
-]);

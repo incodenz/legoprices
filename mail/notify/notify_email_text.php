@@ -15,7 +15,5 @@ your lucky day.
 
 It just showed up at <?= $store ?> for <?= Yii::$app->formatter->asCurrency($storeSet->price) ?>
 
-<?= \yii\helpers\Url::to(['notify/confirm', 'id' => $model->id, 'hash' => $model->hash], 'http') ?>
+Just visit this page for more details <?= \yii\helpers\Url::to(['set/view', 'code' => $model->code], 'http') ?>
 
-
-Thanks

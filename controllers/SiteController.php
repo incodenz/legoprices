@@ -3,7 +3,10 @@
 namespace app\controllers;
 
 use app\models\LegoSetSearch;
+use app\models\StoreSetPrice;
 use Yii;
+use yii\data\ActiveDataProvider;
+use yii\db\Query;
 use yii\web\Controller;
 use app\models\User;
 use yii\web\HttpException;
@@ -43,5 +46,36 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    public function actionTop() {
+
+        $query = new Query();
+        $query->select = [
+            'code',
+            'min(store_set_price.price) AS price',
+            'rrp',
+            '(rrp-min(store_set_price.price)) / rrp * 100 AS discount'
+        ];
+        $query->from = ['lego_set'];
+        $query->join = [
+            ['INNER JOIN', 'store_set', 'lego_set.id = store_set.legoset_id'],
+            ['INNER JOIN', 'store_set_price', 'store_set.id = store_set_price.store_set_id'],
+        ];
+        $query->where = 'store_set_price.status_id!='.StoreSetPrice::STATUS_EXPIRED;
+        $query->groupBy = ['lego_set.id'];
+        $query->orderBy('discount desc');
+        $query->limit = 100;
+
+        $provider = new ActiveDataProvider([
+            'query' => $query
+        ]);
+
+        return $this->render(
+            'top',
+            [
+                'provider' => $provider
+            ]
+        );
     }
 }

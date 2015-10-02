@@ -33,7 +33,7 @@ class NotificationSet extends \app\models\base\NotificationSet
     public function notify($storeSetPrice)
     {
         if ($this->notificationAddress->status_id != NotificationAddress::STATUS_CONFIRMED) {
-            // sorry email not confirmed - you miss you
+            // sorry email not confirmed - you miss out
             return ;
         }
 
@@ -42,7 +42,7 @@ class NotificationSet extends \app\models\base\NotificationSet
         $model = $storeSet->legoset;
         $subject = 'Lego Set: '.$model.' on sale at '.$store->title;
 
-        Yii::$app->mailer->compose(
+        $mail = Yii::$app->mailer->compose(
             [
                 'html' => 'notify/notify_email_html',
                 'text' => 'notify/notify_email_text',
@@ -57,8 +57,11 @@ class NotificationSet extends \app\models\base\NotificationSet
             )
             ->setFrom(Yii::$app->params['fromEmail'])
             ->setTo($this->notificationAddress->email)
-            ->setSubject($subject)
-            ->send();
+            ->setSubject($subject);
+        $mail->send();
+
+        $this->status_id = self::STATUS_SENT;
+        $this->save();
     }
 
 }

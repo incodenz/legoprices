@@ -25,12 +25,10 @@ class StoreSetPrice extends \app\models\base\StoreSetPrice
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
-
         if ($this->status_id != self::STATUS_EXPIRED) {
             self::updateAll(
                 [
                     'status_id' => self::STATUS_EXPIRED,
-                    'updated_at' => new Expression('NOW()'),
                 ],
                 'store_set_id=:storeSet && id != :id',
                 [
@@ -56,8 +54,9 @@ class StoreSetPrice extends \app\models\base\StoreSetPrice
                 'set_code' => $this->storeSet->legoset->code,
                 'status_id' => NotificationSet::STATUS_PENDING
             ])->andWhere(
-                ['>=', 'percent_off', $discount]
+                ['<=', 'percent_off', $discount]
             )->all();
+
         foreach($notifySets as $notifySet) {
             $notifySet->notify($this);
         }

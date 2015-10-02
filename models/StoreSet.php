@@ -27,7 +27,7 @@ class StoreSet extends \app\models\base\StoreSet
     public function updatePrice($price, $debug = false) {
         $currentPrice = $this->getCurrentPrice();
         if (!$currentPrice || $currentPrice->price != $price) {
-            $currentPrice = $currentPrice ? $currentPrice : new StoreSetPrice();
+            $currentPrice = new StoreSetPrice();
             $currentPrice->updated_at = new Expression('NOW()');
             $currentPrice->price = $price;
             $currentPrice->store_set_id = $this->id;

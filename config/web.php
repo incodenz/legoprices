@@ -14,6 +14,14 @@ $config = [
         '@admin' => '@app/modules/admin',
     ],
     'components' => [
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapAsset' => [
+                    'sourcePath' => '@app/assets',
+                    'css' => ['css/bootswatch.min.css']
+                ],
+            ],
+        ],
         'request' => [
             'cookieValidationKey' => 'sjqU1WzKQcnsDGZmoVXk9remxm0scIqH',
         ],
@@ -25,17 +33,7 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                'login' => 'user/login',
-                'about' => 'site/about',
-                '' => 'site/index',
-                'logout' => 'user/logout',
-                'set/<code:([0-9]+)>' => 'set/view',
-            ]
-        ],
+
     ],
 ];
 
