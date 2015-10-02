@@ -37,6 +37,7 @@ $provider = new ActiveDataProvider([
                         /* @var app\models\StoreSet $m */
                         return Html::a($m->store->title, $m->url) .
                             (
+                                $m->currentPrice && 
                                 $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK
                                     ? '<strong class="text-muted"><em> (Out of Stock)</em></strong>'
                                     : ''
