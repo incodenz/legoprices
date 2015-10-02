@@ -46,7 +46,8 @@ function processPage(data) {
 		item.title = items.eq(i).find('.product-name').text().trim();
 		item.image = items.eq(i).find('img').eq(0).attr('src');
 		item.link = items.eq(i).find('a').eq(0).attr('href');
-		item.price = items.eq(i).find('.special-price').length ? items.eq(i).find('.special-price').text() : items.eq(i).find('.regular-price').text();
+		item.price = items.eq(i).find('.special-price').length ? items.eq(i).find('.special-price .price').text() : items.eq(i).find('.regular-price').text();
+
 		item.price = item.price.trim().substr(3); // price is NZ$0.00
 		lego_id = /([0-9]{4,5})/.exec(item.title)
 		item.set_id = lego_id ? lego_id[0] : null;
