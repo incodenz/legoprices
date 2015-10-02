@@ -37,7 +37,7 @@ $provider = new ActiveDataProvider([
                         /* @var app\models\StoreSet $m */
                         return Html::a($m->store->title, $m->url) .
                             (
-                                $m->currentPrice && 
+                                $m->currentPrice &&
                                 $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK
                                     ? '<strong class="text-muted"><em> (Out of Stock)</em></strong>'
                                     : ''
@@ -52,7 +52,7 @@ $provider = new ActiveDataProvider([
                     'value' => function ($m) use ($model) {
                         /* @var app\models\StoreSet $m */
                         $price = Yii::$app->formatter->asCurrency($m->price);
-                        if ($m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK) {
+                        if ($m->currentPrice && $m->currentPrice->status_id == StoreSetPrice::STATUS_OUT_OF_STOCK) {
                             return '<span class="text-muted">'.$price.'</span>';
                         }
                         return $model->rrp && $m->price < $model->rrp
