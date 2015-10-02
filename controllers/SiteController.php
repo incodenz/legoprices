@@ -68,7 +68,8 @@ class SiteController extends Controller
         $query->limit = 100;
 
         $provider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query,
+            'pagination' => ['pageSize' => 100],
         ]);
 
         return $this->render(

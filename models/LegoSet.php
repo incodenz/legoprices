@@ -13,7 +13,7 @@ class LegoSet extends \app\models\base\LegoSet
 {
     public function __toString()
     {
-        return $this->code.': '.$this->title;
+        return $this->code.' '.($this->theme_id ? $this->theme.' - ' : '').$this->title;
     }
 
     /**

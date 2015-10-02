@@ -17,7 +17,8 @@ $legoSet = new \app\models\LegoSet();
             'attribute' => 'code',
             'label' => $legoSet->getAttributeLabel('code'),
             'value' => function ($m) {
-                return Html::a($m['code'], ['set/view', 'code' => $m['code']]);
+                $set = \app\models\LegoSet::findSet($m['code']);
+                return Html::a($set ? $set : $m['code'], ['set/view', 'code' => $m['code']]);
             },
             'format' => 'html',
         ],
