@@ -10,7 +10,7 @@ use yii\helpers\Html;
 $this->title = Yii::$app->name;
 ?>
 <div class="site-index">
-    <?php \yii\widgets\Pjax::begin() ?>
+
     <?= GridView::widget([
         'filterModel' => $searchModel,
         'dataProvider' => $dataProvider,
@@ -27,6 +27,7 @@ $this->title = Yii::$app->name;
                 'headerOptions' => ['class' => 'col-md-1'],
                 'value' => function ($m) { return Html::a($m->code, ['set/view', 'code' => $m->code]); },
                 'format' => 'html',
+                'contentOptions' => ['class' => 'text-center'],
             ],
             [
                 'attribute' => 'title',
@@ -40,6 +41,11 @@ $this->title = Yii::$app->name;
                         ;
                 },
                 'format' => 'html',
+            ],
+            [
+                'attribute' => 'year',
+                'headerOptions' => ['class' => 'col-md-1'],
+                'contentOptions' => ['class' => 'text-center'],
             ],
             [
                 'attribute' => 'price',
@@ -56,5 +62,5 @@ $this->title = Yii::$app->name;
             ]
         ],
     ]) ?>
-    <?php \yii\widgets\Pjax::end(); ?>
+
 </div>

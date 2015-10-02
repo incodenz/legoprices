@@ -31,6 +31,7 @@ $config = [
             'rules' => [
                 'login' => 'user/login',
                 'about' => 'site/about',
+                '' => 'site/index',
                 'logout' => 'user/logout',
                 'set/<code:([0-9]+)>' => 'set/view',
             ]

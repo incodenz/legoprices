@@ -19,8 +19,8 @@ $provider = new ActiveDataProvider([
 ?>
 
 <h1><?= $model->code.' '.$model->title ?></h1>
-<strong>Year</strong> <?= $model->year ?><br />
-<strong>Theme</strong> <?= $model->theme ?><br />
+<strong>Year</strong> <?= Html::a($model->year, '/?LegoSetSearch%5Byear%5D='.$model->year) ?><br />
+<strong>Theme</strong> <?= Html::a($model->theme, '/?LegoSetSearch%5Btheme_id%5D='.$model->theme_id) ?><br />
 <strong>RRP</strong> <?= $model->rrp ? Yii::$app->formatter->asCurrency($model->rrp) : '?' ?><br />
 <br />
 
@@ -42,7 +42,7 @@ $provider = new ActiveDataProvider([
                                     ? '<strong class="text-muted"><em> (Out of Stock)</em></strong>'
                                     : ''
                             ).' '.
-                            Html::a('(history)', ['set/store-history', 'id' => $m->id], ['class' => 'small']);
+                            Html::a('(history)', ['set/store-history', 'id' => $m->id], ['class' => 'small text-muted']);
                     },
                     'format' => 'html',
                     'enableSorting' => false,

@@ -34,6 +34,7 @@ class LegoSetSearch extends LegoSet
                 self::tableName().'.code code',
                 self::tableName().'.theme_id theme_id',
                 self::tableName().'.rrp rrp',
+                self::tableName().'.year year',
                 'min(price) price',
             ]
         );
@@ -44,6 +45,7 @@ class LegoSetSearch extends LegoSet
 
         $query->andFilterWhere(['like', 'code', $this->code])
             ->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['year' => $this->year])
             ->andFilterWhere(['theme_id' => $this->theme_id])
             ;
         $query->groupBy(self::tableName().'.id');
