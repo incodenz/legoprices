@@ -73,7 +73,7 @@ function processPage(data) {
 		item.set_id = lego_id ? lego_id[0] : null;
 		item.store = 'hiskids';
 
-		item.in_stock = items.eq(i).find('.stock').text().indexOf('In stock') >= 0;
+		item.in_stock = items.eq(i).find('.stock').text().indexOf('In Stock') >= 0;
 		if (item.set_id) {
 			console.log(
 				JSON.stringify(item)
