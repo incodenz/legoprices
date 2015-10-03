@@ -39,6 +39,16 @@ class ScraperController extends Controller
                     $this->processLine($json);
                 } catch (\Exception $e) {
                     // do something with the exception ...
+
+                    $mail = Yii::$app->mailer->compose()
+                        ->setTextBody($e)
+                        ->setHtmlBody(nl2br("JSON: \n".print_r($json)."\n\n\n".$e))
+                        ->setFrom(Yii::$app->params['fromEmail'])
+                        ->setTo('bruce@incode.co.nz')
+                        ->setSubject('Exception with scraper');
+                    $mail->send();
+
+                    return;
                 }
             } else {
                 // bad json

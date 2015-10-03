@@ -62,7 +62,7 @@ function processPage(data) {
 		item = {};
 		item.title = items.eq(i).find('.name').text().trim();
 		item.image = items.eq(i).find('.img').eq(0).attr('src');
-		item.link = items.eq(i).find('a').eq(0).attr('href');
+		item.link = items.eq(i).find('a[href]').eq(0).attr('href');
 		item.price = items.eq(i).find('.price-new').text();
 		if (!item.price) {
 			item.price = items.eq(i).find('.price').text();
