@@ -25,6 +25,8 @@ class StoreSet extends \app\models\base\StoreSet
     }
 
     public function updatePrice($price, $debug = false) {
+        $price = str_replace(',', '', $price);
+        $price = str_replace('$', '', $price);
         $currentPrice = $this->getCurrentPrice();
         if (!$currentPrice || $currentPrice->price != $price) {
             $currentPrice = new StoreSetPrice();

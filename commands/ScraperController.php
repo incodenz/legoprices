@@ -30,25 +30,28 @@ class ScraperController extends Controller
     public function actionOutput()
     {
         $raw_input = '';
+        $exceptionCount = 0;
         while (!feof(STDIN)){
             $content = fgets(STDIN, 1024);
             $raw_input .= $content;
             $json = json_decode($content, TRUE);
-            if ($json) {
+            if ($json && isset($json['set_id'])) {
                 try {
                     $this->processLine($json);
                 } catch (\Exception $e) {
                     // do something with the exception ...
-
+                    $exceptionCount ++;
                     $mail = Yii::$app->mailer->compose()
                         ->setTextBody($e)
-                        ->setHtmlBody(nl2br("JSON: \n".print_r($json)."\n\n\n".$e))
+                        ->setHtmlBody(nl2br("JSON: \n".print_r($json, true)."\n\n\n".$e))
                         ->setFrom(Yii::$app->params['fromEmail'])
                         ->setTo('bruce@incode.co.nz')
                         ->setSubject('Exception with scraper');
                     $mail->send();
 
-                    return;
+                    if ($exceptionCount > 5) {
+                        return;
+                    }
                 }
             } else {
                 // bad json
