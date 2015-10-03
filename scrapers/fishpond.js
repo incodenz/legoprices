@@ -57,7 +57,8 @@ function processPage(data) {
 		if (items.eq(i).find('.delivery').text().indexOf('In stock') >= 0) { // instock
 			item.in_stock = true;
 		}*/
-		if (item.title.toLowerCase().indexOf('minifig') >= 0) {
+		if (item.title.toLowerCase().indexOf('minifig') >= 0
+			|| item.title.toLowerCase().indexOf('cobi') >= 0) {
 			item.set_id = false;
 		}
 			if (item.set_id) {
