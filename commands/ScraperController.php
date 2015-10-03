@@ -80,6 +80,7 @@ class ScraperController extends Controller
         $cmd = Yii::$app->db->createCommand("UPDATE lego_set ls INNER JOIN (select max(price) p, code from lego_set ls
 INNER JOIN store_set ss ON ls.id=ss.legoset_id
 INNER JOIN store_set_price ssp on ss.id=ssp.store_set_id
+WHERE ss.store_id!=10
 GROUP BY code
 HAVING count(price) > 1) x ON ls.code=x.code
 SET rrp=x.p WHERE rrp is null;");
