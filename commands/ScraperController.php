@@ -66,7 +66,7 @@ class ScraperController extends Controller
     }
 
     public function actionUpdate() {
-        $startYear = 2011;
+        $startYear = 2005; // go back a wee way
         $endYear = date('Y') + 1;
 
         for($i = $startYear; $i <= $endYear; $i ++) {
