@@ -8,6 +8,7 @@ namespace app\models;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\Sort;
 
 class LegoSetSearch extends LegoSet
 {
@@ -38,7 +39,20 @@ class LegoSetSearch extends LegoSet
                 'min(price) price',
             ]
         );
-        $query->addSelect('');
+
+        $sort = new Sort([
+            'attributes' => [
+                'title',
+                'year',
+                'code',
+                'price' => [
+                    'asc' => ['min(price)' => SORT_ASC],
+                    'desc' => ['min(price)' => SORT_DESC],
+                    'default' => SORT_ASC,
+                ],
+            ],
+        ]);
+
         $query->innerJoin(StoreSet::tableName(), self::tableName().'.id='.StoreSet::tableName().'.legoset_id');
         $query->innerJoin(StoreSetPrice::tableName(), StoreSet::tableName().'.id='.StoreSetPrice::tableName().'.store_set_id');
         $query->andWhere([StoreSetPrice::tableName().'.status_id' => StoreSetPrice::STATUS_AVAILABLE]);
@@ -52,7 +66,7 @@ class LegoSetSearch extends LegoSet
 
         return new ActiveDataProvider([
             'query' => $query,
-            //'sort' => ['defaultOrder' => ['price' => SORT_DESC]],
+            'sort' => $sort,
         ]);
     }
 }

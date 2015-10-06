@@ -33,6 +33,7 @@ $config = [
             'defaultTimeZone' => date_default_timezone_get(),
             'timeZone' => 'Pacific/Auckland', // Change this timeZone to your local if required
             'datetimeFormat' => 'dd/MM/yyyy HH:mm aa',
+            'nullDisplay' => '<span class="not-set">(unknown)</span>'
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
