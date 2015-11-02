@@ -55,7 +55,8 @@ class SiteController extends Controller
             'code',
             'min(store_set_price.price) AS price',
             'rrp',
-            '(rrp-min(store_set_price.price)) / rrp * 100 AS discount'
+            '(rrp-min(store_set_price.price)) / rrp * 100 AS discount',
+            'rrp - min(store_set_price.price) discount_price'
         ];
         $query->from = ['lego_set'];
         $query->join = [
@@ -64,13 +65,21 @@ class SiteController extends Controller
         ];
         $query->where = 'store_set_price.status_id!='.StoreSetPrice::STATUS_EXPIRED;
         $query->groupBy = ['lego_set.id'];
-        $query->orderBy('discount desc');
+        //$query->orderBy('discount desc');
         $query->limit = 100;
 
         $provider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => ['pageSize' => 100],
         ]);
+        $provider->sort->attributes['discount'] = [
+            'asc' => ['discount_price' => SORT_DESC],
+            'desc' => ['discount' => SORT_DESC],
+        ];
+        $provider->sort->attributes['discount_price'] = [
+            'asc' => ['discount' => SORT_DESC],
+            'desc' => ['discount_price' => SORT_DESC],
+        ];
 
         return $this->render(
             'top',

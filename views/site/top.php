@@ -43,11 +43,11 @@ $legoSet = new \app\models\LegoSet();
             }
         ],
         [
-            'attribute' => 'discount',
+            'attribute' => 'discount_price',
             'label' => 'Discount $',
             'contentOptions' => ['class' => 'text-right'],
             'value' => function ($m) {
-                return Yii::$app->formatter->asCurrency($m['rrp'] - $m['price']);
+                return Yii::$app->formatter->asCurrency($m['discount_price']);
             }
         ],
 
