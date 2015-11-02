@@ -69,6 +69,7 @@ class ScraperController extends Controller
     }
 
     public function actionUpdate() {
+        $this->checkStoreUpdates();
         $startYear = 2005; // go back a wee way
         $endYear = date('Y') + 1;
 
@@ -177,5 +178,35 @@ SET rrp=x.p WHERE rrp is null;");
 
         }
 
+    }
+
+    private function checkStoreUpdates()
+    {
+        $sql = "SELECT title, unix_timestamp() - unix_timestamp(updated_at) last_update
+                FROM (
+                  SELECT s.title, ssp.updated_at
+                  FROM store_set_price ssp
+                  INNER JOIN store_set ss ON ss.id=ssp.store_set_id
+                  INNER JOIN store s ON s.id=ss.store_id
+                  ORDER BY ssp.updated_at DESC
+                ) x GROUP BY title";
+        $cmd = Yii::$app->db->createCommand($sql);
+
+        $results = $cmd->queryAll();
+        $outdated = [];
+        foreach($results as $row) {
+            if ((int) $row['last_update'] > 86400) {
+                $outdated[] = $row['title'];
+            }
+        }
+        if (count($outdated)) {
+            Yii::$app->mailer->compose()
+                ->setFrom(Yii::$app->params['fromEmail'])
+                ->setTo('bruce.aldridge@gmail.com')
+                ->setSubject('Lego Prices DB: Stores outdated')
+                ->setTextBody('Plain text content')
+                ->setHtmlBody('<b>scrapers need to be updated?</b><p>'.implode(', ', $outdated).'</p>')
+                ->send();
+        }
     }
 }
