@@ -8,10 +8,10 @@ var mysql = require('mysql'),
 
 var dbFile;
 try {
-    fs.accessSync('../config/prod/db.php');
-    dbFile = fs.readFileSync('../config/prod/db.php', {encoding: 'utf8'});
+    fs.accessSync('/var/www/lego.incode.co.nz/config/prod/db.php');
+    dbFile = fs.readFileSync('/var/www/lego.incode.co.nz/config/prod/db.php', {encoding: 'utf8'});
 } catch (err) {
-    dbFile = fs.readFileSync('../config/dev/db.php', {encoding: 'utf8'});
+    dbFile = fs.readFileSync('/vagrant/config/dev/db.php', {encoding: 'utf8'});
 }
 
 var re = {
