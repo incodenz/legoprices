@@ -10,7 +10,6 @@ var mysql = require('mysql'),
 var dbFile;
 
 try {
-    fs.accessSync(path.resolve(__dirname, '../config/prod/db.php'));
     dbFile = fs.readFileSync(path.resolve(__dirname, '../config/prod/db.php'), {encoding: 'utf8'});
 } catch (err) {
     dbFile = fs.readFileSync(path.resolve(__dirname, '../config/dev/db.php'), {encoding: 'utf8'});
