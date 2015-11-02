@@ -1,9 +1,10 @@
 var http = require('http'),
     cheerio = require('cheerio'),
     url = require('url'),
+    dimensions = require('./dimensions');
     BASEURL = 'www.thewarehouse.co.nz';
 
-    
+
     var pages = [
         /*'/red/catalog/toys/lego/city',
         '/red/catalog/toys/lego/classic',
@@ -84,7 +85,7 @@ function processPage(data) {
 		//item.link = BASEURL+items.eq(i).find('a').eq(0).attr('href');
 		item.link = items.eq(i).find('.sli_h2 a').eq(0).attr('href');
         var q = url.parse(item.link, true).query;
-      
+
 
         item.link = q && q.url ? q.url : item.link;
 
@@ -92,6 +93,10 @@ function processPage(data) {
 		//item.price = items.eq(i).find('.price').text();
 		item.price = items.eq(i).find('.sli_grid_price').text();
 		item.price = item.price.toUpperCase().replace('NOW', '').replace('$','').trim();
+
+        // check to see if we have a dimensions product
+        item.title = dimensions.reformatTitle(item.title);
+
 		lego_id = /([0-9]{4,5})/.exec(item.title);
 		item.set_id = lego_id ? lego_id[0] : null;
         // check if in stock ...

@@ -6,34 +6,25 @@ var http = require('https'),
  
 
 
-	for (i = 1; i <= 12 ; i++)
+	for (i = 1; i <= 1 ; i++)
 	{
 		(function (item) {
 			setTimeout(function() {
-				getNormalPage(item);
+				getPage(item);
 			}, 2000*item);
 		})(i)
 		
 	}
-	for (i = 1; i <= 2 ; i++)
-	{
-		(function (item) {
-			setTimeout(function() {
-				getDimesionPage(item);
-			}, 2500*item);
-		})(i)
 
-	}
-
-function getNormalPage(page) {
+function getPage(page) {
 
 	page = page ? page : 1;
 
 
 
 	grabURL(
-		'www.mightyape.co.nz',
-		'/Toys/LEGO/All?page='+page,
+		'shop.jbhifi.co.nz',
+		'/support.aspx?q=lego%20dimensions&source=all&sort=&plow=0&phigh=0&len=50&instock=0&onsale=0&page='+page,
 		function (str) {
 			console.log(' - Loaded! Page '+page+' .. processing');
 			processPage(str);
@@ -43,45 +34,33 @@ function getNormalPage(page) {
 	
 
 }
-function getDimesionPage(page) {
-	page = page ? page : 1;
-	grabURL(
-		'www.mightyape.co.nz',
-		'/Games/Xbox-One/LEGO-Dimensions-Characters/All?page='+page,
-		function (str) {
-			console.log(' - Loaded! Page '+page+' .. processing');
-			processPage(str);
 
-		}
-	);
-}
 function processPage(data) {
 	var $ = cheerio.load(data),
-        items = $('.products .product'),
+        items = $('.product_list'),
         item, 
         lego_id;
     for (i = 0; i < items.length; i++)
 	{
 		item = {};
-		item.title = items.eq(i).find('a.title').text().trim();
-		if (item.title == 'LEGO Legends of Chima - Lion Tribe (70224)') {
-			item.title = 'LEGO Legends of Chima - Lion Tribe (70229)';
-		}
+		item.title = items.eq(i).find('.title_list').text().trim();
 		item.image = items.eq(i).find('img').eq(0).attr('src');
-		item.link = 'https://www.mightyape.co.nz'+items.eq(i).find('a').eq(0).attr('href');
-		item.price = items.eq(i).find('.price .price').text();
-		item.price = item.price.trim().substr(1); // price is $0.00
+		item.link = 'https://shop.jbhifi.co.nz'+items.eq(i).find('a').eq(0).attr('href');
+		item.price = items.eq(i).find('.price_list').text();
+		var re = /\$[\s]*([0-9\.]+)/;
+		item.price = item.price.trim().match(re)[1];
 
 		// check to see if we have a dimensions product
 		item.title = dimensions.reformatTitle(item.title);
-
+		
 		lego_id = /([0-9]{4,5})/.exec(item.title)
 		item.set_id = lego_id ? lego_id[0] : null;
-        item.store = 'mightyape';
-		item.in_stock = false;
+        item.store = 'jbhifi';
+		/*item.in_stock = false;
 		if (items.eq(i).find('.delivery').text().indexOf('In stock') >= 0) { // instock
 			item.in_stock = true;
-		}
+		}*/
+
 			if (item.set_id) {
 				console.log(
 					JSON.stringify(item)
