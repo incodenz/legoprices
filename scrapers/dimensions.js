@@ -50,6 +50,7 @@ connection.query('SELECT ls.code, ls.title FROM lego_set ls INNER JOIN theme t O
                 });
             }
         }
+        connection.destroy();
         return;
     }
     console.log(err);
