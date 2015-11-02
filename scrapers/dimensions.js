@@ -3,15 +3,17 @@
  */
 var mysql = require('mysql'),
     fs    = require('fs'),
+    path  = require('path'),
     sets = [];
 
 
 var dbFile;
+
 try {
-    fs.accessSync('/var/www/lego.incode.co.nz/config/prod/db.php');
-    dbFile = fs.readFileSync('/var/www/lego.incode.co.nz/config/prod/db.php', {encoding: 'utf8'});
+    fs.accessSync(path.resolve(__dirname, '../config/prod/db.php'));
+    dbFile = fs.readFileSync(path.resolve(__dirname, '../config/prod/db.php'), {encoding: 'utf8'});
 } catch (err) {
-    dbFile = fs.readFileSync('/vagrant/config/dev/db.php', {encoding: 'utf8'});
+    dbFile = fs.readFileSync(path.resolve(__dirname, '../config/dev/db.php'), {encoding: 'utf8'});
 }
 
 var re = {
