@@ -208,5 +208,10 @@ SET rrp=x.p WHERE rrp is null;");
                 ->setHtmlBody('<b>scrapers need to be updated?</b><p>'.implode(', ', $outdated).'</p>')
                 ->send();
         }
+
+        // remove links last found more than 48hours ago
+        $sql = "UPDATE store_set_price SET status_id=:expired WHERE status_id!=:expired && updated_at<=NOW() - INTERVAL 48 HOUR";
+
+        Yii::$app->db->createCommand($sql, [':expired' => StoreSetPrice::STATUS_EXPIRED])->execute();
     }
 }

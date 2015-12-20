@@ -63,7 +63,7 @@ class SiteController extends Controller
             ['INNER JOIN', 'store_set', 'lego_set.id = store_set.legoset_id'],
             ['INNER JOIN', 'store_set_price', 'store_set.id = store_set_price.store_set_id'],
         ];
-        $query->where = 'store_set_price.status_id!='.StoreSetPrice::STATUS_EXPIRED;
+        $query->where = 'store_set_price.status_id='.StoreSetPrice::STATUS_AVAILABLE;
         $query->groupBy = ['lego_set.id'];
         //$query->orderBy('discount desc');
         $query->limit = 100;
