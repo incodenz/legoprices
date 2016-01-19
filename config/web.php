@@ -8,10 +8,12 @@ $defaultConfig = require(__DIR__.'/default.php');
 $config = [
     'bootstrap' => ['log'],
     'modules' => [
-        'admin'=>['class' => 'app\modules\admin\Module']
+        'admin'=>['class' => 'app\modules\admin\Module'],
+        'register'=>['class' => 'app\modules\register\Module'],
     ],
     'aliases' => [
         '@admin' => '@app/modules/admin',
+        '@register' => '@app/modules/register',
     ],
     'components' => [
         'assetManager' => [

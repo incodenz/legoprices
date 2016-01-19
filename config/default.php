@@ -48,6 +48,11 @@ $config = [
                 'top' => 'site/top',
                 'logout' => 'user/logout',
                 'set/<code:([0-9]+)>' => 'set/view',
+                'register' => 'register/default/index',
+                'register/start' => 'register/default/start',
+                'register/continue' => 'register/default/continue',
+                'register/detail' => 'register/default/detail',
+
             ]
         ],
         'db' => [
