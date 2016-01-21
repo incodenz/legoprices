@@ -29,6 +29,12 @@ $this->title = 'CBS 2016 - Registration';
             <?= $form->field($model, 'exhibit_details')->textarea() ?>
             <?= $form->field($model, 'power_required')->checkbox() ?>
             <?= $form->field($model, 'travel_grant')->textarea() ?>
+
+
+            <?= $form->field($model, 'collab_city')->checkbox() ?>
+            <?= $form->field($model, 'collab_moonbase')->checkbox() ?>
+            <?= $form->field($model, 'collab_gbc')->checkbox() ?>
+            <?= $form->field($model, 'collab_glowindark')->checkbox() ?>
         <?php } ?>
         <?= $form->field($model, 'terms')->checkbox()->label('I agree to the terms and conditions') ?>
     </fieldset>

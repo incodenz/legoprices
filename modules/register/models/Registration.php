@@ -101,6 +101,11 @@ class Registration extends \app\modules\register\models\base\Registration
             [
                 'type_id' => 'I want to ',
                 'team_members' => 'How many people are helping you',
+
+                'collab_city' => 'Take part in the City collaboration',
+                'collab_moonbase' => 'Take part in the Moonbase-42 collaboration',
+                'collab_gbc' => 'Take part in the GBC collaboration',
+                'collab_glowindark' => 'Take part in the Glow in the Dark collaboration',
             ]
         );
     }

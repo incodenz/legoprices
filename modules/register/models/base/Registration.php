@@ -19,6 +19,10 @@ use yii\data\ActiveDataProvider;
  * @property string $comments
  * @property string $created_at
  * @property string $updated_at
+ * @property string $collab_city
+ * @property string $collab_moonbase
+ * @property string $collab_gbc
+ * @property string $collab_glowindark
  *
  * @property \app\modules\register\models\RegistrationTeamMember[] $registrationTeamMembers
  */
@@ -56,7 +60,8 @@ class Registration extends \yii\db\ActiveRecord
         return [
             [['status_id', 'type_id', 'power_required', 'terms'], 'integer'],
             [['exhibit_details', 'table_size', 'travel_grant', 'comments'], 'string'],
-            [['created_at', 'updated_at'], 'safe']
+            [['created_at', 'updated_at'], 'safe'],
+            [['collab_city', 'collab_moonbase', 'collab_gbc', 'collab_glowindark'], 'string', 'max' => 255]
         ];
     }
 
@@ -77,6 +82,10 @@ class Registration extends \yii\db\ActiveRecord
             'comments' => 'Comments',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'collab_city' => 'Collab City',
+            'collab_moonbase' => 'Collab Moonbase',
+            'collab_gbc' => 'Collab Gbc',
+            'collab_glowindark' => 'Collab Glowindark',
         ];
     }
 
@@ -117,7 +126,11 @@ class Registration extends \yii\db\ActiveRecord
             ->andFilterWhere(['like', 'travel_grant', $this->travel_grant])
             ->andFilterWhere(['like', 'comments', $this->comments])
             ->andFilterWhere(['like', 'created_at', $this->created_at])
-            ->andFilterWhere(['like', 'updated_at', $this->updated_at]);
+            ->andFilterWhere(['like', 'updated_at', $this->updated_at])
+            ->andFilterWhere(['like', 'collab_city', $this->collab_city])
+            ->andFilterWhere(['like', 'collab_moonbase', $this->collab_moonbase])
+            ->andFilterWhere(['like', 'collab_gbc', $this->collab_gbc])
+            ->andFilterWhere(['like', 'collab_glowindark', $this->collab_glowindark]);
 
         return new ActiveDataProvider([
             'query' => $query,
