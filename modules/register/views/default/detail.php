@@ -70,8 +70,8 @@ $this->title = 'CBS 2016 - Registration';
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']address')->textarea() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']over_18')->checkbox(['class' => 'over18-check']) ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']parental_consent', ['options' => ['class' => 'form-group over18-not']])->checkbox()->label('Parental consent given') ?>
-        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_dinner')->checkbox(['class' => 'dinner-check']) ?>
-        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_afol', ['options' => ['class' => 'form-group over18-only']])->checkbox() ?>
+        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_dinner')->checkbox() ?>
+        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_afol', ['options' => ['class' => 'form-group over18-only']])->checkbox(['class' => 'dinner-check']) ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']emergency_contact')->textInput() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']dietary_requirements', ['options' => ['class' => 'form-group dinner-only']])->textInput() ?>
 
