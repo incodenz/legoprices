@@ -1,5 +1,6 @@
 <?php
 /* @var $this \yii\web\View */
+/* @var $sent bool */
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
@@ -9,6 +10,13 @@ $this->title = 'CBS 2016 - Continue Registration';
 ?>
 
 <h1><?= $this->title ?></h1>
+
+<?php if ($sent) { ?>
+<div class="alert alert-info" style="color: #000;">
+    <strong>Thanks,</strong>
+    <p>An email has been sent containing the details you need</p>
+</div>
+<?php } ?>
 
 <p class="lead">
     To continue your registration - enter the email address, and we'll send you a link to continue.

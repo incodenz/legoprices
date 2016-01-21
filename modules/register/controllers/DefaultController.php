@@ -4,8 +4,12 @@ namespace app\modules\register\controllers;
 
 use app\modules\register\models\Registration;
 use app\modules\register\models\RegistrationTeamMember;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Yii;
+use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class DefaultController
@@ -13,7 +17,7 @@ use yii\web\Controller;
  */
 class DefaultController extends Controller
 {
-    public $layout = '//blank';
+    public $layout = 'cbs';
 
     public function beforeAction($action)
     {
@@ -27,14 +31,58 @@ class DefaultController extends Controller
     {
         return $this->render('index');
     }
+    public function actionHome()
+    {
+        $model = $this->loadModel();
+        if (!($model instanceof Registration)) {
+            return $model;
+        }
+        return $this->render(
+            'home',
+            [
+                'model' => $model
+            ]
+        );
+    }
+    public function actionPay()
+    {
+        $model = $this->loadModel();
+        if (!($model instanceof Registration)) {
+            return $model;
+        }
+        return $this->render(
+            'pay',
+            [
+                'model' => $model
+            ]
+        );
+    }
+    public function actionEvents()
+    {
+        $model = $this->loadModel();
+        if (!($model instanceof Registration)) {
+            return $model;
+        }
+        return $this->render(
+            'events',
+            [
+                'model' => $model
+            ]
+        );
+    }
+    public function actionUpdate($id, $hash = '')
+    {
 
+    }
     /**
      * @return string
      */
     public function actionStart()
     {
-        $model =  new Registration();
+        $model =  new Registration(['scenario' => Registration::SCENARIO_START]);
         $primaryContact = $model->getPrimaryTeamMember();
+        $primaryContact->scenario = RegistrationTeamMember::SCENARIO_SECONDARY;
+
 
         if (Yii::$app->request->isPost) {
             $model->load(Yii::$app->request->post());
@@ -67,15 +115,28 @@ class DefaultController extends Controller
             ]
         );
     }
+    public function actionConfirm($id, $hash)
+    {
+        $model = Registration::findOne($id);
+        if (!$model || $model->hash != $hash) {
+            return $this->redirect(['index']);
+        }
+        $session = Yii::$app->session;
+        $session->set('registration_id', $model->id);
+        return $this->redirect(['continue']);
+
+    }
     public function actionContinue()
     {
-        if ($this->loadModel(false)) {
-            $this->redirect(['detail']);
+        $model = $this->loadModel(false);
+        if ($model) {
+            return $this->redirect($model->status_id == Registration::STATUS_NEW ? ['detail'] : ['home']);
         }
-
+        $sent = false;
         if (Yii::$app->request->isPost) {
             $email = Yii::$app->request->post('email');
             if ($email) {
+                $sent = true;
                 $teamMembers = RegistrationTeamMember::find()->where([
                     'primary_contact' => '1',
                     'email' => $email
@@ -98,18 +159,78 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render('continue');
+        return $this->render('continue', ['sent' => $sent]);
     }
     public function actionDetail()
     {
         $model = $this->loadModel();
-        $primaryContact = $model->getPrimaryTeamMember();
+        if (!($model instanceof Registration)) {
+            return $model;
+        }
+        $model->addScenario();
+        //$primaryContact = $model->getPrimaryTeamMember();
+
+        if (Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->post());
+            $validate = true;
+            if (Yii::$app->request->post('addMember', '') == 'addMember') {
+                $contact = new RegistrationTeamMember();
+                $contact->registration_id = $model->id;
+                $contact->save(false);
+                $validate = false;
+            }
+            $removeMember = Yii::$app->request->post('removeMember', '');
+            if ($removeMember != '') {
+                /* @var RegistrationTeamMember $member */
+                $member = RegistrationTeamMember::findOne($removeMember);
+                if ($member) {
+                    if ($member->registration_id == $model->id && !$member->primary_contact) {
+                        $member->delete();
+                        $validate = false;
+                    }
+                }
+            }
+
+            /* @var RegistrationTeamMember[] $teamMembers */
+            $teamMembers = ArrayHelper::map(
+                $model->registrationTeamMembers,
+                'id',
+                function ($o) {
+                    return $o;
+                });
+            Model::loadMultiple($teamMembers, Yii::$app->request->post());
+
+            foreach($teamMembers as $teamMember) {
+                if ($teamMember->registration_id != $model->id) {
+                    throw new AccessDeniedException;
+                }
+                $teamMember->addScenario();
+            }
+
+            if ($validate) {
+                $model->save(false);
+                foreach ($teamMembers as $teamMember) {
+                    $teamMember->save(false);
+                }
+
+                $success = $model->validate();
+                $success = Model::validateMultiple($teamMembers) && $success;
+
+                if ($success) {
+                    if ($model->status_id == Registration::STATUS_NEW) {
+                        $model->status_id = Registration::STATUS_SUBMITTED;
+                    }
+                    $success = $model->save();
+
+                    return $this->redirect(['home']);
+                }
+            }
+        }
 
         return $this->render(
             'detail',
             [
                 'model' => $model,
-                'primaryContact' => $primaryContact,
             ]
         );
     }
@@ -126,7 +247,7 @@ class DefaultController extends Controller
         /* @var Registration $model */
         $model = Registration::findOne($registration_id);
         if (!$model && $redirect) {
-            $this->redirect(['index']);
+            return $this->redirect(['index']);
         }
 
         return $model;

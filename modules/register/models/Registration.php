@@ -23,6 +23,8 @@ class Registration extends \app\modules\register\models\base\Registration
     const STATUS_CONFIRMED = 50;
 
     const FEE = '$10.00';
+    const SCENARIO_START = 'start';
+    const SCENARIO_MAIN = 'main';
 
     public $team_members;
 
@@ -47,6 +49,16 @@ class Registration extends \app\modules\register\models\base\Registration
         'Triple',
     ];
 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_START] = [
+            'team_members',
+            'type_id',
+        ];
+
+        return $scenarios;
+    }
     public static function getTypes()
     {
         return self::$_types;
@@ -65,7 +77,7 @@ class Registration extends \app\modules\register\models\base\Registration
     }
     public function getStatus()
     {
-        return ArrayHelper::getValue(self::getStatuses(), $this->status_id, null);
+        return ArrayHelper::getValue(self::getStatuses(), $this->status_id, self::getStatuses()[self::STATUS_NEW]);
     }
 
     public function getPrimaryTeamMember()
@@ -98,7 +110,9 @@ class Registration extends \app\modules\register\models\base\Registration
         return ArrayHelper::merge(
             parent::rules(),
             [
-                ['team_members', 'integer', 'min' => 0, 'max' => 10]
+                ['team_members', 'integer', 'min' => 0, 'max' => 10],
+                [['type_id', 'exhibit_details', 'table_size'], 'required', 'on' => self::SCENARIO_MAIN],
+                ['terms', 'compare', 'compareValue' => 1, 'message' => 'Terms & Conditions must be accepted'],
             ]
         );
     }
@@ -114,5 +128,39 @@ class Registration extends \app\modules\register\models\base\Registration
                 'value' => new Expression('CURRENT_TIMESTAMP'),
             ]
         ];
+    }
+
+    public function getContinueUrl()
+    {
+        return \yii\helpers\Url::to(['/register/confirm', 'id' => $this->id, 'hash' => $this->hash], 'http');
+    }
+    public function getHash()
+    {
+        return sha1($this->id.'CBS_2016'.$this->created_at.$this->type_id);
+    }
+
+    public function addScenario()
+    {
+        if ($this->type_id != self::TYPE_VOLUNTEER) {
+            $this->scenario = self::SCENARIO_MAIN;
+        }
+    }
+
+    public function isPaid()
+    {
+        $paid = true;
+        foreach($this->registrationTeamMembers as $teamMember) {
+            if (!$teamMember->is_paid) {
+                $paid = false;
+            }
+        }
+        if ($this->status_id == self::STATUS_SUBMITTED && $paid) {
+            $this->status_id = self::STATUS_PAYMENT_RECEIVED;
+            $this->save(false, ['status_id']);
+        } elseif ($this->status_id == self::STATUS_PAYMENT_RECEIVED && !$paid) {
+            $this->status_id = self::STATUS_SUBMITTED;
+            $this->save(false, ['status_id']);
+        }
+        return $paid;
     }
 }

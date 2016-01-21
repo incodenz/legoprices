@@ -1,15 +1,32 @@
 <?php
-use app\models\NotificationAddress;
-/* @var NotificationAddress $model */
+/* @var \app\modules\register\models\RegistrationTeamMember[] $teamMembers */
 /* @var $this \yii\web\View view component instance */
 /* @var $message \yii\mail\MessageInterface the message being composed */
 
 ?>
 
-Before we can send you emails to notify you of prices, you need to confirm your
-email address by following the link below
+<?php if (count($teamMembers) > 1) { ?>
+It looks like you have started several applications, click the link below that you want to edit
 
-<?= \yii\helpers\Url::to(['notify/confirm', 'id' => $model->id, 'hash' => $model->hash], 'http') ?>
+<?php foreach($teamMembers as $teamMember) { ?>
+<?= $teamMember ?>
+Last Update: <?= Yii::$app->formatter->asDatetime($teamMember->updated_at) ?>
+Status: <?= $teamMember->registration->getStatus() ?>
+<?=  $teamMember->registration->getContinueUrl() ?>
 
 
-Thanks
+<?php } ?>
+<?php } else { ?>
+To continue your registration, follow the link below
+
+<?php foreach($teamMembers as $teamMember) { ?>
+<?= $teamMember."\n" ?>
+Last Update: <?= Yii::$app->formatter->asDatetime($teamMember->updated_at)."\n" ?>
+Status: <?= $teamMember->registration->getStatus()."\n" ?>
+<?=  $teamMember->registration->getContinueUrl()."\n" ?>
+    <?php } ?>
+<?php } ?>
+
+
+Thanks,
+Christchurch Brick Show 2016 Team

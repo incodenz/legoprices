@@ -52,6 +52,10 @@ $config = [
                 'register/start' => 'register/default/start',
                 'register/continue' => 'register/default/continue',
                 'register/detail' => 'register/default/detail',
+                'register/confirm' => 'register/default/confirm',
+                'register/home' => 'register/default/home',
+                'register/pay' => 'register/default/pay',
+                'register/events' => 'register/default/events',
 
             ]
         ],

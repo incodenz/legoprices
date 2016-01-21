@@ -14,4 +14,6 @@ try {
     (new yii\web\Application($config))->run();
 } catch (\yii\web\NotFoundHttpException $e) {
     // do nothing with
+    header("HTTP/1.0 404 Not Found", false, 404);
+    echo '<h1>File Not Found</h1>';
 }

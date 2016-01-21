@@ -133,3 +133,6 @@ table.table .tcol-90 {
 }
 
 /* ===CONTENT=== */
+.form-group {
+  margin-bottom: 5px;
+}

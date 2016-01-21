@@ -28,6 +28,8 @@ use yii\data\ActiveDataProvider;
  * @property string $tshirt_colour
  * @property string $created_at
  * @property string $updated_at
+ * @property integer $email_me
+ * @property integer $is_paid
  *
  * @property \app\modules\register\models\Registration $registration
  */
@@ -63,7 +65,7 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['registration_id', 'primary_contact', 'option_dinner', 'option_afol', 'over_18', 'parental_consent'], 'integer'],
+            [['registration_id', 'primary_contact', 'option_dinner', 'option_afol', 'over_18', 'parental_consent', 'email_me', 'is_paid'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['first_name', 'last_name', 'email', 'password', 'ext_hash', 'contact_number', 'address', 'emergency_contact', 'dietary_requirements', 'tshirt_size', 'tshirt_colour'], 'string', 'max' => 255]
         ];
@@ -95,6 +97,8 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
             'tshirt_colour' => 'Tshirt Colour',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'email_me' => 'Email Me',
+            'is_paid' => 'Is Paid',
         ];
     }
 
@@ -130,6 +134,8 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
             'option_afol' => $this->option_afol,
             'over_18' => $this->over_18,
             'parental_consent' => $this->parental_consent,
+            'email_me' => $this->email_me,
+            'is_paid' => $this->is_paid,
         ]);
 
         $query->andFilterWhere(['like', 'first_name', $this->first_name])
