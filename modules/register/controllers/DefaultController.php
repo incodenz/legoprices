@@ -31,6 +31,18 @@ class DefaultController extends Controller
     {
         return $this->render('index');
     }
+    public function actionPrizes()
+    {
+        return $this->render('prizes');
+    }
+    public function actionSet()
+    {
+        return $this->render('set');
+    }
+    public function actionFees()
+    {
+        return $this->render('fees');
+    }
     public function actionHome()
     {
         $model = $this->loadModel();

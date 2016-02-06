@@ -9,10 +9,10 @@
 It looks like you have started several applications, click the link below that you want to edit
 
 <?php foreach($teamMembers as $teamMember) { ?>
-<?= $teamMember ?>
-Last Update: <?= Yii::$app->formatter->asDatetime($teamMember->updated_at) ?>
-Status: <?= $teamMember->registration->getStatus() ?>
-<?=  $teamMember->registration->getContinueUrl() ?>
+<?= $teamMember."\n" ?>
+Last Update: <?= Yii::$app->formatter->asDatetime($teamMember->updated_at)."\n" ?>
+Status: <?= $teamMember->registration->getStatus()."\n" ?>
+<?=  $teamMember->registration->getContinueUrl()."\n" ?>
 
 
 <?php } ?>

@@ -16,14 +16,18 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
     const SCENARIO_SECONDARY_SELF = 'secondary_self';
     const SCENARIO_SECONDARY = 'secondary';
 
-    public static function shirtColours()
+    /**
+     * @param Registration $registration
+     * @return array
+     */
+    public static function shirtColours($registration)
     {
-        return [
-            'Red',
-            'Blue',
-            'Indigo',
-            'Violet',
-        ];
+        switch($registration->type_id) {
+            case Registration::TYPE_VOLUNTEER:
+                return ['Yellow'];
+            default:
+                return ['Blue', 'Green'];
+        }
     }
     public static function shirtSizes()
     {
@@ -37,6 +41,7 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
             'Womens' => [
                 'Womens 6' => '6',
                 'Womens 8' => '8',
+                'Womens 10' => '10',
                 'Womens 12' => '12',
                 'Womens 14' => '14',
                 'Womens 16' => '16',
@@ -97,6 +102,8 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
                 'tshirt_size' => 'T-Shirt Size',
                 'tshirt_colour' => 'T-Shirt Colour',
                 'over_18' => 'Over 18',
+                'hivis' => 'Do you have a Hi-Vis vest? (required during set up and pack down)',
+                'show_set' => 'Yes, I want to purchase the registration exclusive "Christchurch Railway Station" set for '.Yii::$app->formatter->asCurrency(Registration::SHOW_SET_FEE)
 
             ]
         );

@@ -22,9 +22,26 @@ class Registration extends \app\modules\register\models\base\Registration
     const STATUS_PAYMENT_RECEIVED = 30;
     const STATUS_CONFIRMED = 50;
 
-    const FEE = '$10.00';
+    const REGISTRATION_FEE = 20;
+    const ADDITIONAL_FEE = 10;
+
+    const SHOW_SET_FEE = 35;
+
+    const SALES_TABLE_FEE = 200;
+    const TURN_OVER_PERCENT = 5;
+
     const SCENARIO_START = 'start';
     const SCENARIO_MAIN = 'main';
+
+    const TABLE_SINGLE = 'Single table';
+    const TABLE_2LONG = '2 tables long';
+    const TABLE_3LONG = '3 tables long';
+    const TABLE_4LONG = '4 tables long';
+    const TABLE_1LONG2DEEP = '2 tables deep';
+    const TABLE_2LONG2DEEP = '2 tables long, 2 deep';
+    const TABLE_3LONG2DEEP = '3 tables long, 2 deep';
+    const TABLE_4LONG2DEEP = '4 tables long, 2 deep';
+    const TABLE_2CORNER = '2 corner tables';
 
     public $team_members;
 
@@ -42,11 +59,40 @@ class Registration extends \app\modules\register\models\base\Registration
         self::STATUS_CONFIRMED => 'Confirmed',
     ];
 
-    private static $_tables = [
-        'Half',
-        'Full',
-        'Double',
-        'Triple',
+    private static $_display_tables = [
+        self::TABLE_SINGLE,
+        self::TABLE_2LONG,
+        self::TABLE_3LONG,
+        self::TABLE_4LONG,
+        self::TABLE_1LONG2DEEP,
+        self::TABLE_2LONG2DEEP,
+        self::TABLE_3LONG2DEEP,
+        self::TABLE_4LONG2DEEP,
+        self::TABLE_2CORNER,
+    ];
+
+    private static $_sales_tables = [
+        self::TABLE_SINGLE,
+        self::TABLE_2LONG,
+        self::TABLE_3LONG,
+        self::TABLE_4LONG,
+        self::TABLE_1LONG2DEEP,
+        self::TABLE_2LONG2DEEP,
+        self::TABLE_3LONG2DEEP,
+        self::TABLE_4LONG2DEEP,
+        self::TABLE_2CORNER,
+    ];
+
+    private static $_sales_table_quantity = [
+        self::TABLE_SINGLE => 1,
+        self::TABLE_2LONG => 2,
+        self::TABLE_3LONG => 3,
+        self::TABLE_4LONG => 4,
+        self::TABLE_1LONG2DEEP => 2,
+        self::TABLE_2LONG2DEEP => 4,
+        self::TABLE_3LONG2DEEP => 6,
+        self::TABLE_4LONG2DEEP => 8,
+        self::TABLE_2CORNER => 2,
     ];
 
     public function scenarios()
@@ -63,9 +109,16 @@ class Registration extends \app\modules\register\models\base\Registration
     {
         return self::$_types;
     }
-    public static function getTables()
+    public static function getDisplayTables()
     {
-        return self::$_tables;
+        return self::$_display_tables;
+    }
+    public static function getSalesTables()
+    {
+        return self::$_sales_tables;
+    }
+    public function getSalesTableCost() {
+        return ArrayHelper::getValue(self::$_sales_table_quantity, $this->sales_tables, 1) * self::SALES_TABLE_FEE;
     }
     public function getStatuses()
     {
@@ -101,6 +154,8 @@ class Registration extends \app\modules\register\models\base\Registration
             [
                 'type_id' => 'I want to ',
                 'team_members' => 'How many people are helping you',
+                'display_tables' => 'How many tables for your Display',
+                'sales_tables' => 'How many tables for selling',
 
                 'collab_city' => 'Take part in the City collaboration',
                 'collab_moonbase' => 'Take part in the Moonbase-42 collaboration',
@@ -116,8 +171,15 @@ class Registration extends \app\modules\register\models\base\Registration
             parent::rules(),
             [
                 ['team_members', 'integer', 'min' => 0, 'max' => 10],
-                [['type_id', 'exhibit_details', 'table_size'], 'required', 'on' => self::SCENARIO_MAIN],
+                [['type_id'], 'required', 'on' => self::SCENARIO_MAIN],
+
                 ['terms', 'compare', 'compareValue' => 1, 'message' => 'Terms & Conditions must be accepted'],
+                ['sales_tables', 'required', 'when' => function($model) {
+                    return $model->type_id == self::TYPE_SALES || $model->type_id = self::TYPE_BOTH;
+                }],
+                [['display_tables', 'exhibit_details'], 'required', 'when' => function($model) {
+                    return $model->type_id == self::TYPE_EXHIBIT || $model->type_id = self::TYPE_BOTH;
+                }],
             ]
         );
     }

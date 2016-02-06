@@ -56,6 +56,8 @@ $config = [
                 'register/home' => 'register/default/home',
                 'register/pay' => 'register/default/pay',
                 'register/events' => 'register/default/events',
+                'register/prizes' => 'register/default/prizes',
+                'register/fees' => 'register/default/fees',
 
             ]
         ],
