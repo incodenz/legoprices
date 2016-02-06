@@ -60,7 +60,7 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
 
     public function __toString()
     {
-        return $this->first_name.' '.$this->last_name;
+        return $this->first_name && $this->last_name ? $this->first_name.' '.$this->last_name : 'No Name';
     }
     public function scenarios()
     {

@@ -117,8 +117,12 @@ class Registration extends \app\modules\register\models\base\Registration
     {
         return self::$_sales_tables;
     }
+    public function getSalesTableQty()
+    {
+        return (int) ArrayHelper::getValue(self::$_sales_table_quantity, $this->sales_tables, 1);
+    }
     public function getSalesTableCost() {
-        return ArrayHelper::getValue(self::$_sales_table_quantity, $this->sales_tables, 1) * self::SALES_TABLE_FEE;
+        return $this->getSalesTableQty() * self::SALES_TABLE_FEE;
     }
     public function getStatuses()
     {
@@ -229,5 +233,33 @@ class Registration extends \app\modules\register\models\base\Registration
             $this->save(false, ['status_id']);
         }
         return $paid;
+    }
+
+    public function getPaymentDetails()
+    {
+        $lines = [];
+        $lines[] = ['Registration ('.$this->getPrimaryTeamMember().')', self::REGISTRATION_FEE];
+        foreach($this->registrationTeamMembers as $registrationTeamMember) {
+            if (!$registrationTeamMember->primary_contact) {
+                $lines[] = ['Additional Member ('.$registrationTeamMember.')', self::ADDITIONAL_FEE];
+            }
+        }
+        foreach($this->registrationTeamMembers as $registrationTeamMember) {
+            if ($registrationTeamMember->show_set) {
+                $lines[] = [' - Christchurch Railway Station Set ('.$registrationTeamMember.')', self::SHOW_SET_FEE];
+            }
+        }
+        if ($this->type_id == self::TYPE_SALES || $this->type_id == self::TYPE_BOTH) {
+            $lines[] = ['Sales Table - '.$this->sales_tables.' ('.$this->getSalesTableQty().')', $this->getSalesTableCost()];
+        }
+        return $lines;
+    }
+    public function getTotalToPay()
+    {
+        $total = 0;
+        foreach($this->getPaymentDetails() as $paymentDetail) {
+            $total += $paymentDetail[1];
+        }
+        return $total;
     }
 }
