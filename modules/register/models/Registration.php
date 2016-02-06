@@ -95,6 +95,11 @@ class Registration extends \app\modules\register\models\base\Registration
         self::TABLE_2CORNER => 2,
     ];
 
+    public function getReference()
+    {
+        return 'R'.sprintf('%05d', $this->id);
+    }
+
     public function scenarios()
     {
         $scenarios = parent::scenarios();
@@ -179,10 +184,10 @@ class Registration extends \app\modules\register\models\base\Registration
 
                 ['terms', 'compare', 'compareValue' => 1, 'message' => 'Terms & Conditions must be accepted'],
                 ['sales_tables', 'required', 'when' => function($model) {
-                    return $model->type_id == self::TYPE_SALES || $model->type_id = self::TYPE_BOTH;
+                    return $model->type_id == self::TYPE_SALES || $model->type_id == self::TYPE_BOTH;
                 }],
                 [['display_tables', 'exhibit_details'], 'required', 'when' => function($model) {
-                    return $model->type_id == self::TYPE_EXHIBIT || $model->type_id = self::TYPE_BOTH;
+                    return $model->type_id == self::TYPE_EXHIBIT || $model->type_id == self::TYPE_BOTH;
                 }],
             ]
         );
@@ -250,7 +255,7 @@ class Registration extends \app\modules\register\models\base\Registration
             }
         }
         if ($this->type_id == self::TYPE_SALES || $this->type_id == self::TYPE_BOTH) {
-            $lines[] = ['Sales Table - '.$this->sales_tables.' ('.$this->getSalesTableQty().')', $this->getSalesTableCost()];
+            $lines[] = ['Sales Table - '.$this->sales_tables.' ('.$this->getSalesTableQty().' tables)', $this->getSalesTableCost()];
         }
         return $lines;
     }

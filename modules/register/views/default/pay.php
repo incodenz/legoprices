@@ -52,3 +52,8 @@ $this->title = 'CBS 2016 - Pay Registration';
        </div>
     </div>
 </div>
+
+
+<p>
+    <?= Html::a('Back', ['home'], ['class' => 'btn btn-default']) ?>
+</p>

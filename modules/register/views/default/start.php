@@ -31,15 +31,7 @@ $this->title = 'CBS 2016 - Registration';
     </fieldset>
 
 
-<!--
-    <fieldset>
-        <legend>Table Requirements</legend>
-        <?= $form->field($model, 'type_id')->dropDownList(Registration::getTypes()) ?>
-        <?= $form->field($model, 'table_size')->dropDownList(array_combine(Registration::getTables(), Registration::getTables())) ?>
-        <?= $form->field($model, 'power_required')->checkbox() ?>
-        <?= $form->field($model, 'travel_grant')->textarea() ?>
-        <?= $form->field($model, 'terms')->checkbox()->label('I agree to the terms and conditions') ?>
-    </fieldset> -->
+
 
     <fieldset class="team_members">
         <?= $form->field($model, 'team_members')->dropDownList([
@@ -54,7 +46,14 @@ $this->title = 'CBS 2016 - Registration';
                 '8' => '8',
                 '9' => '9',
             ]
-        )->hint('Registration costs '.Registration::FEE.' per person') ?>
+        ) ?>
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3">
+            <p class="small">NB. Additional members are charged at <?= Yii::$app->formatter->asCurrency(Registration::ADDITIONAL_FEE) ?> per member.
+                See <?= Html::a('fees and charges', ['fees'], ['target' => '_blank']) ?> for more information
+            </p>
+            </div>
+        </div>
     </fieldset>
     <hr/>
 
