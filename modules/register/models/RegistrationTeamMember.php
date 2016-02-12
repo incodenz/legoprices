@@ -35,8 +35,10 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
             'Childrens' => [
                 'Childrens 6' => '6',
                 'Childrens 8' => '8',
+                'Childrens 10' => '10',
                 'Childrens 12' => '12',
                 'Childrens 14' => '14',
+                'Childrens 16' => '16',
             ],
             'Womens' => [
                 'Womens 6' => '6',
@@ -46,14 +48,17 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
                 'Womens 14' => '14',
                 'Womens 16' => '16',
                 'Womens 18' => '18',
+                'Womens 20' => '20',
             ],
             'Mens' => [
                 'Mens S' => 'Small',
                 'Mens M' => 'Medium',
                 'Mens L' => 'Large',
-                'Mens XL' => 'X-Large',
-                'Mens XXL' => 'XX-Large',
-                'Mens XXXL' => 'XXX-Large',
+                'Mens XL' => 'XL',
+                'Mens 2XL' => '2XL',
+                'Mens 3XL' => '3XL',
+                'Mens 4XL' => '4XL',
+                'Mens 5XL' => '5XL',
             ]
         ];
     }
@@ -82,11 +87,6 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
                         $this->addError($attr, $this->getAttributeLabel($attr).' Required if under 18');
                     }
                 }, 'skipOnEmpty' => false],
-                ['option_afol', function () {
-                    if ($this->option_afol && !$this->over_18) {
-                        $this->addError('option_afol', 'Unable to goto AFOL event if under 18');
-                    }
-                }],
                 [['first_name', 'last_name', 'email'], 'required', 'on' => self::SCENARIO_SECONDARY],
             ]
         );
@@ -98,7 +98,6 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
             parent::attributeLabels(),
             [
                 'option_afol' => 'Attend the AFOL event on Saturday evening',
-                'option_dinner' => 'Attend the Social Dinner on Friday evening',
                 'tshirt_size' => 'T-Shirt Size',
                 'tshirt_colour' => 'T-Shirt Colour',
                 'over_18' => 'Over 18',

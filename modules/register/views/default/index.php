@@ -22,9 +22,7 @@ $this->title = 'CBS 2016 - Registration';
 
     <li>Offer your time as a Show Volunteer
 
-    <li>Apply to sell new or used Lego, or other miscellaneous Lego-related items at the Show (All sellers are required to pay a larger <?= Html::a('fee', ['fees']) ?>).
-
-    <li>Expression of interest for the social dinner on the Friday evening (Attendees are required to pay for their own meal).
+    <li>Apply to sell new or used Lego, or other miscellaneous Lego-related items at the Show (All sellers are required to pay a set <?= Html::a('fee', ['fees']) ?>).
 
     <li>Apply to come along to the AFOL event and <?= Html::a('prize ceremony', ['prizes']) ?> directly after the show on Saturday evening (Event starting at 6:00pm, food provided from 5.15).
 

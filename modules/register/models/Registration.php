@@ -25,7 +25,7 @@ class Registration extends \app\modules\register\models\base\Registration
     const REGISTRATION_FEE = 20;
     const ADDITIONAL_FEE = 10;
 
-    const SHOW_SET_FEE = 35;
+    const SHOW_SET_FEE = 40;
 
     const SALES_TABLE_FEE = 200;
     const TURN_OVER_PERCENT = 5;
@@ -42,6 +42,7 @@ class Registration extends \app\modules\register\models\base\Registration
     const TABLE_3LONG2DEEP = '3 tables long, 2 deep';
     const TABLE_4LONG2DEEP = '4 tables long, 2 deep';
     const TABLE_2CORNER = '2 corner tables';
+    const TABLE_FLOOR_SPACE = 'No Table, just floor space (please specify)';
 
     public $team_members;
 
@@ -69,6 +70,7 @@ class Registration extends \app\modules\register\models\base\Registration
         self::TABLE_3LONG2DEEP,
         self::TABLE_4LONG2DEEP,
         self::TABLE_2CORNER,
+        self::TABLE_FLOOR_SPACE,
     ];
 
     private static $_sales_tables = [
@@ -165,11 +167,12 @@ class Registration extends \app\modules\register\models\base\Registration
                 'team_members' => 'How many people are helping you',
                 'display_tables' => 'How many tables for your Display',
                 'sales_tables' => 'How many tables for selling',
+                'travel_grant' => 'Transport Assistance Grant',
 
                 'collab_city' => 'Take part in the City collaboration',
                 'collab_moonbase' => 'Take part in the Moonbase-42 collaboration',
                 'collab_gbc' => 'Take part in the GBC collaboration',
-                'collab_glowindark' => 'Take part in the Glow in the Dark collaboration',
+                'collab_glowindark' => 'Take part in the "Dark zone" (for lit up and UV glow models) collaboration',
             ]
         );
     }

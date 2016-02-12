@@ -18,7 +18,6 @@ use yii\data\ActiveDataProvider;
  * @property string $ext_hash
  * @property string $contact_number
  * @property string $address
- * @property integer $option_dinner
  * @property integer $option_afol
  * @property integer $over_18
  * @property integer $parental_consent
@@ -67,7 +66,7 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['registration_id', 'primary_contact', 'option_dinner', 'option_afol', 'over_18', 'parental_consent', 'email_me', 'is_paid', 'hivis', 'show_set'], 'integer'],
+            [['registration_id', 'primary_contact', 'option_afol', 'over_18', 'parental_consent', 'email_me', 'is_paid', 'hivis', 'show_set'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['first_name', 'last_name', 'email', 'password', 'ext_hash', 'contact_number', 'address', 'emergency_contact', 'dietary_requirements', 'tshirt_size', 'tshirt_colour'], 'string', 'max' => 255]
         ];
@@ -89,7 +88,6 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
             'ext_hash' => 'Ext Hash',
             'contact_number' => 'Contact Number',
             'address' => 'Address',
-            'option_dinner' => 'Option Dinner',
             'option_afol' => 'Option Afol',
             'over_18' => 'Over 18',
             'parental_consent' => 'Parental Consent',
@@ -134,7 +132,6 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
             'id' => $this->id,
             'registration_id' => $this->registration_id,
             'primary_contact' => $this->primary_contact,
-            'option_dinner' => $this->option_dinner,
             'option_afol' => $this->option_afol,
             'over_18' => $this->over_18,
             'parental_consent' => $this->parental_consent,

@@ -48,6 +48,14 @@ $this->title = 'CBS 2016 - Registration';
 
             <?= $form->field($model, 'exhibit_details')->textarea() ?>
             <?= $form->field($model, 'travel_grant')->textarea() ?>
+               <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <p class="small">
+                            If required please give tell us what you need a grant for and how you intend to use it.
+                            Final decision on allocation of grants and amounts given are at the discretion of the CBS2016 committee.
+                        </p>
+                    </div>
+                </div>
             <?= $form->field($model, 'power_required')->checkbox() ?>
 
 
@@ -90,8 +98,7 @@ $this->title = 'CBS 2016 - Registration';
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']address')->textarea() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']over_18')->checkbox(['class' => 'over18-check']) ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']parental_consent', ['options' => ['class' => 'form-group over18-not']])->checkbox()->label('Parental consent given') ?>
-        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_dinner')->checkbox() ?>
-        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_afol', ['options' => ['class' => 'form-group over18-only']])->checkbox(['class' => 'dinner-check']) ?>
+        <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_afol')->checkbox(['class' => 'dinner-check']) ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']emergency_contact')->textInput() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']dietary_requirements', ['options' => ['class' => 'form-group dinner-only']])->textInput() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']hivis')->checkbox() ?>
