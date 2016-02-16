@@ -2,7 +2,10 @@
 /* @var $this \yii\web\View */
 /* @var $model app\modules\register\models\Registration */
 
-use app\modules\register\models\Registration;use yii\bootstrap\ActiveForm;
+use app\modules\register\models\Registration;
+use app\modules\register\models\RegistrationTeamMember;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -64,7 +67,7 @@ $this->title = 'CBS 2016 - Registration';
             <?= $form->field($model, 'collab_gbc')->checkbox() ?>
             <?= $form->field($model, 'collab_glowindark')->checkbox() ?>
         <?php } ?>
-        <?= $form->field($model, 'terms')->checkbox()->label('I agree to the terms and conditions') ?>
+        <?= $form->field($model, 'terms')->checkbox()->label('I agree to the <a href="http://lug4x2.org/christchurch-brick-show-2014/cbs2014-tc/">terms and conditions</a>') ?>
     </fieldset>
 
     <?php foreach($model->registrationTeamMembers as $k => $registrationTeamMember) { ?>
@@ -100,6 +103,14 @@ $this->title = 'CBS 2016 - Registration';
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']parental_consent', ['options' => ['class' => 'form-group over18-not']])->checkbox()->label('Parental consent given') ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']option_afol')->checkbox(['class' => 'dinner-check']) ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']emergency_contact')->textInput() ?>
+        <div class="row">
+            <div class="col-sm-9 col-sm-offset-3">
+            <p class=small>
+                Name and contact details of friend of family not attending the event.
+            </p>
+                <br>
+            </div>
+        </div>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']dietary_requirements', ['options' => ['class' => 'form-group dinner-only']])->textInput() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']hivis')->checkbox() ?>
         <?= $form->field($registrationTeamMember, '['.$registrationTeamMember->id.']show_set')->checkbox() ?>
@@ -114,7 +125,7 @@ $this->title = 'CBS 2016 - Registration';
         <?= $form
             ->field($registrationTeamMember, '['.$registrationTeamMember->id.']tshirt_size')
             ->dropDownList(
-                \app\modules\register\models\RegistrationTeamMember::shirtSizes(),
+                RegistrationTeamMember::shirtSizes(),
                 [
                     'prompt' => '',
                 ]
@@ -122,11 +133,50 @@ $this->title = 'CBS 2016 - Registration';
         <?= $form
             ->field($registrationTeamMember, '['.$registrationTeamMember->id.']tshirt_colour')
             ->dropDownList(
-                \app\modules\register\models\RegistrationTeamMember::shirtColours($model),
+                RegistrationTeamMember::shirtColours($model),
                 [
                     'prompt' => '',
                 ]
             ) ?>
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3">
+        <fieldset class="small">
+            <legend>Events</legend>
+            <p>
+                This year as part of CBS 2016,
+                we will be running events during the show that you can attend.
+                Please indicate below which if any events you which to attend.
+                Please note, numbers are limited and placements will be assigned on a first come,
+                first served basis
+            </p>
+            <div class="event-listing">
+                <?php $events = ArrayHelper::map(RegistrationTeamMember::getEvents(), 'title',  'description') ?>
+                <ul>
+                    <?php foreach($events as $title => $description) { ?>
+                    <li><?= $title ?> &ndash; <?= $description ?></li>
+                    <?php } ?>
+                </ul>
+            </div>
+            <div class="checkboxList">
+                <?= Html::activeCheckboxList(
+                    $registrationTeamMember,
+                    '['.$registrationTeamMember->id.']add_events',
+                    ArrayHelper::map(
+                        RegistrationTeamMember::getEvents(),
+                        'id',
+                        function ($a) {
+                            return $a['day']. ' '. $a['time'].' '. $a['title'];
+                        }
+                    ),
+                    [
+                        'separator' => '<br />'
+                    ]
+                ) ?>
+            </div>
+        </fieldset>
+                    </div>
+                </div>
+
         <?php if (!$registrationTeamMember->primary_contact) { ?>
         </div> <!-- // .hide-extra -->
         <?php } ?>

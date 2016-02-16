@@ -43,6 +43,7 @@ class Registration extends \app\modules\register\models\base\Registration
     const TABLE_4LONG2DEEP = '4 tables long, 2 deep';
     const TABLE_2CORNER = '2 corner tables';
     const TABLE_FLOOR_SPACE = 'No Table, just floor space (please specify)';
+    const EMAIL = 'chchbrickshow@gmail.com';
 
     public $team_members;
 
@@ -176,6 +177,7 @@ class Registration extends \app\modules\register\models\base\Registration
             ]
         );
     }
+
 
     public function rules()
     {

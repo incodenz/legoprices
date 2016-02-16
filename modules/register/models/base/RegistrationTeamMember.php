@@ -33,6 +33,7 @@ use yii\data\ActiveDataProvider;
  * @property integer $show_set
  *
  * @property \app\modules\register\models\Registration $registration
+ * @property \app\modules\register\models\RegistrationTeamMemberEvent[] $registrationTeamMemberEvents
  */
 class RegistrationTeamMember extends \yii\db\ActiveRecord
 {
@@ -110,6 +111,14 @@ class RegistrationTeamMember extends \yii\db\ActiveRecord
     public function getRegistration()
     {
         return $this->hasOne(\app\modules\register\models\Registration::className(), ['id' => 'registration_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRegistrationTeamMemberEvents()
+    {
+        return $this->hasMany(\app\modules\register\models\RegistrationTeamMemberEvent::className(), ['registration_team_member_id' => 'id']);
     }
 
     /**

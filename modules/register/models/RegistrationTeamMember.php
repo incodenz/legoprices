@@ -2,6 +2,7 @@
 
 namespace app\modules\register\models;
 
+use app\modules\register\models\base\RegistrationTeamMemberEvent;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -16,6 +17,86 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
     const SCENARIO_SECONDARY_SELF = 'secondary_self';
     const SCENARIO_SECONDARY = 'secondary';
 
+    public $add_events;
+
+    private static $_events = [
+        1 => [
+            'id' => 1,
+            'day' => 'Saturday',
+            'time' => '9am - 10am',
+            'title' => 'Photography',
+            'description' => 'go through the basics on how to set up, what equipment is needed, and how to use it all.'
+        ],
+        2 => [
+            'id' => 2,
+            'day' => 'Saturday',
+            'time' => '11am - 12noon',
+            'title' => 'Stop Motion',
+            'description' => 'showing the basics on how to set up the right lighting, what cameras and programs to use and where to get it all from.'
+        ],
+        3 => [
+            'id' => 3,
+            'day' => 'Saturday',
+            'time' => '12noon - 1pm',
+            'title' => 'Children’s workshop',
+            'description' => 'fun activities and challenges for the hour.'
+        ],
+        4 => [
+            'id' => 4,
+            'day' => 'Saturday',
+            'time' => '1pm - 2pm',
+            'title' => 'Mindstorm Basics',
+            'description' => 'hands on taking a look at a new set and going through how to set it all up. '
+        ],
+        5 => [
+            'id' => 5,
+            'day' => 'Saturday',
+            'time' => '3pm - 4pm',
+            'title' => 'Building Techniques',
+            'description' => 'how to build unique and crazy rock formations and other techniques on how these guys build.  Opportunity to try it out too. '
+        ],
+        6 => [
+            'id' => 6,
+            'day' => 'Sunday',
+            'time' => '9am - 10am',
+            'title' => 'Photography',
+            'description' => 'go through the basics on how to set up, what equipment is needed, and how to use it all.'
+        ],
+        7 => [
+            'id' => 7,
+            'day' => 'Sunday',
+            'time' => '11am - 12noon',
+            'title' => 'Stop Motion',
+            'description' => 'showing the basics on how to set up the right lighting, what cameras and programs to use and where to get it all from.'
+        ],
+        8 => [
+            'id' => 8,
+            'day' => 'Sunday',
+            'time' => '12noon - 1pm',
+            'title' => 'Children’s workshop',
+            'description' => 'fun activities and challenges for the hour.'
+        ],
+        9 => [
+            'id' => 9,
+            'day' => 'Sunday',
+            'time' => '1pm - 2pm',
+            'title' => 'Mindstorm Basics',
+            'description' => 'hands on taking a look at a new set and going through how to set it all up. '
+        ],
+        10 => [
+            'id' => 10,
+            'day' => 'Sunday',
+            'time' => '3pm - 4pm',
+            'title' => 'Building Techniques',
+            'description' => 'how to build unique and crazy rock formations and other techniques on how these guys build.  Opportunity to try it out too. '
+        ],
+
+    ];
+
+    public static function getEvents()
+    {
+        return self::$_events;
+    }
     /**
      * @param Registration $registration
      * @return array
@@ -24,7 +105,7 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
     {
         switch($registration->type_id) {
             case Registration::TYPE_VOLUNTEER:
-                return ['Yellow'];
+                return ['Volunteer Yellow'];
             default:
                 return ['Blue', 'Green'];
         }
@@ -81,13 +162,14 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
             [
                 ['email', 'email'],
                 //['email', 'exist', 'targetAttribute' => 'primary_contact'],
-                [['first_name', 'last_name'], 'required'],
-                [['parental_consent', 'emergency_contact'], function ($attr) {
+                [['first_name', 'last_name', 'emergency_contact'], 'required'],
+                [['parental_consent'], function ($attr) {
                     if (!$this->over_18 && !$this->$attr) {
                         $this->addError($attr, $this->getAttributeLabel($attr).' Required if under 18');
                     }
                 }, 'skipOnEmpty' => false],
                 [['first_name', 'last_name', 'email'], 'required', 'on' => self::SCENARIO_SECONDARY],
+                ['add_events', 'safe'],
             ]
         );
     }
@@ -101,7 +183,7 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
                 'tshirt_size' => 'T-Shirt Size',
                 'tshirt_colour' => 'T-Shirt Colour',
                 'over_18' => 'Over 18',
-                'hivis' => 'Do you have a Hi-Vis vest? (required during set up and pack down)',
+                'hivis' => 'Can you provide your own Hi-Vis vest? (Health & Safety requirements)',
                 'show_set' => 'Yes, I want to purchase the registration exclusive "Christchurch Railway Station" set for '.Yii::$app->formatter->asCurrency(Registration::SHOW_SET_FEE)
 
             ]
@@ -139,5 +221,41 @@ class RegistrationTeamMember extends \app\modules\register\models\base\Registrat
     public function getHash()
     {
         return sha1($this->id.'CBS_2016'.$this->created_at.$this->registration_id);
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes); // TODO: Change the autogenerated stub
+
+        if ($this->add_events) {
+            $this->handleEvents();
+        }
+    }
+
+    private function handleEvents()
+    {
+        // delete any events that have been removed.
+        $currentEvents = ArrayHelper::map($this->registrationTeamMemberEvents, 'id', 'event_id');
+        foreach($currentEvents as $id => $event_id) {
+            if (!in_array($event_id, $this->add_events)) {
+                $e = RegistrationTeamMemberEvent::findOne($id);
+                $e->delete();
+            }
+        }
+        // add any new ones
+        foreach($this->add_events as $event_id) {
+            if (!in_array($event_id, $currentEvents)) {
+                $e = new RegistrationTeamMemberEvent();
+                $e->event_id = $event_id;
+                $e->registration_team_member_id = $this->id;
+                $e->save();
+            }
+        }
+        unset($this->registrationTeamMemberEvents);
+    }
+    public function afterFind()
+    {
+        parent::afterFind(); // TODO: Change the autogenerated stub
+        $this->add_events = ArrayHelper::map($this->registrationTeamMemberEvents, 'id', 'event_id');
     }
 }

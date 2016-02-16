@@ -45,14 +45,14 @@ $this->title = 'CBS 2016 - Fees & Charges';
     </tr>
     <tr>
         <th>Professional Sellers <a href="#nb">*</a></th>
-        <td colspan="2" class="text-center">please email <a href="mailto:info@LUG4x2.org">info@LUG4x2.org</a></td>
+        <td colspan="2" class="text-center">please email <a href="mailto:<?= Registration::EMAIL ?>"><?= Registration::EMAIL ?></a></td>
     </tr>
 </table>
 
 <p name="nb"><strong>*</strong>
     Any seller table deposit is deemed to be confirmed and accepted only after being accepted by the CBS committee.
     Any seller in the business of selling (with a physical or internet presence determined by the CBS committee) will be treated
-    as a professional seller and fall under a separate rate. Please email <a href="mailto:info@LUG4x2.org">info@LUG4x2.org</a>
+    as a professional seller and fall under a separate rate. Please email <a href="mailto:<?= Registration::EMAIL ?>"><?= Registration::EMAIL ?></a>
     for more information
 
 </p>
